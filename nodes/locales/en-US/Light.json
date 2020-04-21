@@ -1,0 +1,12 @@
+{
+     "node-input-server" : "Config"
+    ,"node-input-name" : "Name"
+    ,"template-row-group" : "Group"
+    ,"template-row-size" : "Size"
+    ,"node-input-control" : "Control"
+    ,"node-input-status" : "Status"
+    ,"node-input-iconOn" : "Icon"
+    ,"icon-list-link" : "Click here to view the icons!"
+    
+ 
+}

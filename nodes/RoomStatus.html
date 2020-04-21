@@ -1,0 +1,186 @@
+<script type="text/javascript">
+    RED.nodes.registerType("RoomStatus", {
+        category: 'dashboard',
+        color: 'rgb( 63, 173, 181)',
+        defaults: {
+            server: { type: "knxUltimate-config", required: true },
+            // belonging dashboard group
+            group: { type: 'ui_group', required: true },
+            name: { value: '' },
+            order: { value: 0 },
+            // width and height of widget
+            width: {
+                value: 0,
+                validate: function (v) {
+                    var valid = true
+                    var width = v || 0;
+                    var currentGroup = $('#node-input-group').val() || this.group;
+                    var groupNode = RED.nodes.node(currentGroup);
+                    valid = !groupNode || +width <= +groupNode.width;
+                    $("#node-input-size").toggleClass("input-error", !valid);
+                    return valid;
+                }
+            },
+            height: { value: 0 },
+            lineType: { value: "two" },
+            actionType: { value: "none" },
+            allowHTML: { value: false }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "icon.png",
+        paletteLabel: "visu-ultimate",
+        label: function () { return this.name || "Room Status"; },
+        oneditprepare: function () {
+            // use elementSizer to input common widget parameters
+            $("#node-input-size").elementSizer({
+                width: "#node-input-width",
+                height: "#node-input-height",
+                group: "#node-input-group"
+            });
+
+            // 31/03/2020 Search Helper
+            function fullSearch(sourceText, searchString) {
+                // This searches for all words in a string
+                var aSearchWords = searchString.toLowerCase().split(" ");
+                var i = 0;
+                for (let index = 0; index < aSearchWords.length; index++) {
+                    if (sourceText.toLowerCase().indexOf(aSearchWords[index]) > -1) i += 1;
+                }
+                return i == aSearchWords.length;
+            }
+
+            // Autocomplete suggestion with ETS csv File
+            $("#node-input-name").autocomplete({
+                minLength: 1,
+                source: function (request, response) {
+                    $.getJSON("knxUltimatecsv?nodeID=a11538cd.63cd48", (data) => {
+                        response($.map(data, function (value, key) {
+                            var sSearch = (value.ga + " (" + value.devicename + ") DPT" + value.dpt);
+                            if (fullSearch(sSearch, request.term)) {
+                                return {
+                                    label: value.ga + " # " + value.devicename + " # " + value.dpt, // Label for Display
+                                    value: value.ga // Value
+                                }
+                            } else {
+                                return null;
+                            }
+                        }));
+                    });
+                }, select: function (event, ui) {
+                    // Sets Datapoint and device name automatically
+                    var sDevName = ui.item.label.split("#")[1].trim();
+                    try {
+                        sDevName = sDevName.substr(sDevName.indexOf(")") + 1).trim();
+                    } catch (error) {
+                    }
+                    $('#node-input-name').val(sDevName);
+                }
+            });
+
+
+        },
+        oneditsave: function () {
+        },
+        oneditresize: function (size) {
+        }
+    });
+</script>
+
+
+<script type="text/x-red" data-template-name="RoomStatus">
+
+    <div class="form-row">
+        <label for="node-input-server">
+            <img
+                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAKnRFWHRDcmVhdGlvbiBUaW1lAEZyIDYgQXVnIDIwMTAgMjE6NTI6MTkgKzAxMDD84aS8AAAAB3RJTUUH3gYYCicNV+4WIQAAAAlwSFlzAAALEgAACxIB0t1+/AAAAARnQU1BAACxjwv8YQUAAACUSURBVHjaY2CgFZg5c+Z/ZEyWAZ8+f/6/ZsWs/xoamqMGkGrA6Wla/1+fVARjEBuGsSoGmY4eZSCNL59d/g8DIDbIAHR14OgFGQByKjIGKX5+6/T///8gGMQGiV1+/B0Fg70GIkD+RMYgxf/O5/7//2MSmAZhkBi6OrgB6Bg5DGB4ajr3f2xqsYYLSDE2THJUDg0AAAqyDVd4tp4YAAAAAElFTkSuQmCC"></img>
+            <span data-i18n="knxUltimate.properties.node-input-server"></span>
+        </label>
+        <input type="text" id="node-input-server" />
+    </div>
+
+    <!-- common input elements for dashboard widget -->
+<div class="form-row" id="template-row-group">
+    <label for="node-input-group"><i class="fa fa-table"></i> <span data-i18n="RoomStatus.label.group"></span></label>
+    <input type="text" id="node-input-group">
+</div>
+<div class="form-row" id="template-row-size">
+    <label><i class="fa fa-object-group"></i> <span data-i18n="RoomStatus.label.size"></span></label>
+    <input type="hidden" id="node-input-width">
+    <input type="hidden" id="node-input-height">
+    <button class="editor-button" id="node-input-size"></button>
+</div>
+
+<!-- widget specific input elements for RoomStatus widget -->
+<div class="form-row">
+    <label for="type-select"><i class="fa fa-bars"></i> <span data-i18n="RoomStatus.label.list"></span></label>
+    <select id="type-select">
+
+        <option value="two" data-i18n="RoomStatus.type.two"></option>
+        <option value="three" data-i18n="RoomStatus.type.three"></option>
+    </select>
+    <input type="hidden" id="node-input-lineType">
+</div>
+<div class="form-row">
+    <label for="action-select"><i class="fa fa-hand-pointer-o"></i> <span
+            data-i18n="RoomStatus.label.action"></span></label>
+    <select id="action-select">
+        <option value="click" data-i18n="RoomStatus.action.click"></option>
+        <option value="check" data-i18n="RoomStatus.action.check"></option>
+        <option value="switch" data-i18n="RoomStatus.action.switch"></option>
+        <option value="menu" data-i18n="RoomStatus.action.menu"></option>
+    </select>
+    <input type="hidden" id="node-input-actionType">
+</div>
+
+<div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="RoomStatus.label.name"></span></label>
+    <input type="text" id="node-input-name">
+</div>
+
+
+
+
+
+
+
+
+<div class="red-ui-typedInput-container" style="width: 70%; margin-right: 0px; margin-left: 0px;">
+    <button tabindex="0"><i class="red-ui-typedInput-icon fa fa-sort-desc" style="display: inline;"></i><span
+            class="red-ui-typedInput-type-label">
+            <div style="width:32px;heigth:32px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="20 20 321 321">
+                    <g fill="none" stroke="#000" stroke-width="10">
+                        <path
+                            d="m97.5,235.33c0,3.508 2.844,6.351 6.351,6.351h53.631c3.507,0 6.351-2.843 6.351-6.351v-109.379c0-3.507-2.844-6.351-6.351-6.351h-53.631c-3.507,0-6.351,2.844-6.351,6.351v109.379z" />
+                        <path
+                            d="m264.092,280.146c0,3.576-2.9,6.477-6.478,6.477l-67.286-37.779c-4.069-2.149-6.477-2.9-6.477-6.478v-123.831c0-3.577 .666-3.389 6.477-6.477l67.286-37.78c3.577,0 6.478,2.899 6.478,6.477v199.391z" />
+                    </g>
+                </svg>
+            </div>
+        </span></button>
+
+    <button tabindex="0"><i class="red-ui-typedInput-icon fa fa-sort-desc" style="display: inline;"></i><span
+            class="red-ui-typedInput-type-label">
+            <div style="width:32px;heigth:32px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="20 20 321 321">
+                    <g fill="none" stroke="#000" stroke-width="10">
+                        <path
+                            d="m97.5,235.33c0,3.508 2.844,6.351 6.351,6.351h53.631c3.507,0 6.351-2.843 6.351-6.351v-109.379c0-3.507-2.844-6.351-6.351-6.351h-53.631c-3.507,0-6.351,2.844-6.351,6.351v109.379z" />
+                        <path
+                            d="m264.092,280.146c0,3.576-2.9,6.477-6.478,6.477l-67.286-37.779c-4.069-2.149-6.477-2.9-6.477-6.478v-123.831c0-3.577 .666-3.389 6.477-6.477l67.286-37.78c3.577,0 6.478,2.899 6.478,6.477v199.391z" />
+                    </g>
+                </svg>
+            </div>
+        </span></button>
+
+    <div class="red-ui-typedInput-input" style="display: none; left: 40px; right: 0px;"><input type="text"
+            style="width: 100%; margin-right: 0px; margin-left: 0px; border-top-right-radius: 4px; border-bottom-right-radius: 4px;">
+    </div>
+
+
+</div>
+
+
+
+
+
+</script>

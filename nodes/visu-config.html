@@ -1,0 +1,37 @@
+<script type="text/javascript">
+    RED.nodes.registerType('visu-config', {
+        category: 'config',
+        defaults: {
+            name: { value: "Config" },
+        },
+        oneditprepare: function () {
+            var node = this;
+
+       
+
+        },
+        oneditsave: function () {
+            var node = this;
+
+           
+        },
+        label: function () {
+            return "Config";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="visu-config">
+  
+    
+    <div class="form-row">
+        <label for="node-config-input-name" >
+            <i class="fa fa-tag"></i>
+            <span data-i18n="visu-config.properties.node-config-input-name"></span>
+        </label>
+        <input type="text" id="node-config-input-name" ><data-i18n="[Title]visu-config.properties.node-config-input-name" style="margin-left:5px;">
+    </div>
+   
+</script>
+
+

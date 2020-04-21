@@ -1,0 +1,28 @@
+{
+  "name": "node-red-contrib-ui-visu-ultimate",
+  "version": "0.0.1",
+  "description": "Node-RED UI widget set, specific for home automation and compatible with knx-ultimate node.",
+  "author": "Massimo Saccani",
+  "license": "ISC",
+  "main": "RoomStatus.js",
+  "node-red": {
+    "nodes": {
+      "Light": "nodes/Light.js",
+      "RoomStatus": "nodes/RoomStatus.js",
+      "visuConfig": "nodes/visu-config.js"
+    }
+  },
+  "bugs": {
+    "url": "https://github.com/Supergiovane/Node-Red/issues"
+  },
+  "homepage": "https://github.com/Supergiovane/Node-Red#readme",
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "mkdirp": "^0.5.1",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=8.9.4"
+  }
+}
