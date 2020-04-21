@@ -22,7 +22,7 @@
                 }
             },
             iconOn: { value: "" }
-           
+
         },
         inputs: 1,
         outputs: 1,
@@ -39,6 +39,13 @@
                 height: "#node-input-height",
                 group: "#node-input-group"
             });
+
+            // Load icon
+            if (typeof node.iconOn !== "undefined") {
+                $.getJSON("visuUltimategetIcon?file=" + node.iconOn, (data) => {
+                    $("#iconaSvgOn").html(data.icona);
+                });
+            }
 
             // 31/03/2020 Search Helper
             function fullSearch(sourceText, searchString) {
@@ -68,13 +75,7 @@
                         }));
                     });
                 }, select: function (event, ui) {
-                    // Sets Datapoint and device name automatically
-                    var sDevName = ui.item.label.split("#")[1].trim();
-                    try {
-                        sDevName = sDevName.substr(sDevName.indexOf(")") + 1).trim();
-                    } catch (error) {
-                    }
-                    $('#node-input-control').val(sDevName);
+
                 }
             });
             // Autocomplete suggestion with ETS csv File
@@ -95,34 +96,44 @@
                         }));
                     });
                 }, select: function (event, ui) {
-                    // Sets Datapoint and device name automatically
-                    var sDevName = ui.item.label.split("#")[1].trim();
-                    try {
-                        sDevName = sDevName.substr(sDevName.indexOf(")") + 1).trim();
-                    } catch (error) {
-                    }
-                    $('#node-input-status').val(sDevName);
+
+                }
+            });
+            // Autocomplete suggestion with icons
+            $("#node-input-iconOn").autocomplete({
+                minLength: 1,
+                source: function (request, response) {
+                    $.getJSON("visuUltimategetOnlyIconNames", (data) => {
+                        response($.map(data, function (value, key) {
+                            var sSearch = value.name;
+                            if (fullSearch(sSearch, request.term)) {
+                                return {
+                                    label: value.name, // Label for Display
+                                    value: value.name // Value
+                                }
+                            } else {
+                                return null;
+                            }
+                        }));
+                    });
+                }, select: function (event, ui) {
+                    // Set the icon
+                    $.getJSON("visuUltimategetIcon?file=" + ui.item.label, (data) => {
+                        $("#iconaSvgOn").html(data.icona);
+                    });
                 }
             });
 
 
-            // GET A LIST OF SVG AS IMAGES. USEFUL FOR MAKING IconList.md
-            // $("#iconList").selectable();
-            // $.getJSON('visuUltimategetIcons', (data) => {
-            //     data.forEach(ico => {
-            //         $("#iconList").append($("<li class=\"ui-state-default\">" + ico.name + "<div style=\"left: 0px; top: 0px;  width: 62px; height: 62px;\">" + ico.svg + "</div></li>"));
+            // $.getJSON('visuUltimategetOnlyIconNames', (data) => {
+            //     data.forEach(file => {
+            //         $("#node-input-iconOn").append($("<option></option>")
+            //             .attr("value", file.filename)
+            //             .text(file.name))
             //     });
+            //     $("#node-input-iconOn").val(node.iconO)
             // });
 
-            $.getJSON('visuUltimategetOnlyIconNames', (data) => {
-                data.forEach(file => {
-                    $("#node-input-iconOn").append($("<option></option>")
-                        .attr("value", file.filename)
-                        .text(file.name))
-                });
-                $("#node-input-iconOn").val(node.iconO)
-            });
-                        
 
 
         },
@@ -172,12 +183,16 @@
     </div>
     <div class="form-row">
         <label for="node-input-iconOn" ><i class="fa fa-tag"></i> <span data-i18n="node-input-iconOn"></span> </label>
-        <select id="node-input-iconOn"></select>
+        <input id="node-input-iconOn">
         <div class="form-tips" style="margin-top: 11px;background-color:#FFEEEE;text-align:center">
-            <b><a target="_blank" href='iconList.html'><span data-i18n="icon-list-link"></span></a></b>
+            <b><a target="_blank" href='visuUltimategetIconsHTML'><span data-i18n="icon-list-link"></span></a></b>
         </div>
     </div>
-
+    <div class="form-row">
+        <div  style="left: 0px; top: 0px;  width: 62px; height: 62px; margin-top: 0px;background-color:dimgray;text-align:center">
+            <div id="iconaSvgOn"></div>
+         </div>
+    </div>
     
 
     <!-- <p>
