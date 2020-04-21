@@ -2,7 +2,7 @@
   "name": "node-red-contrib-ui-visu-ultimate",
   "version": "0.0.1",
   "description": "Node-RED UI widget set, specific for home automation and compatible with knx-ultimate node.",
-  "author": "Massimo Saccani",
+  "author": "Supergiovane",
   "license": "MIT",
   "main": "",
   "node-red": {
@@ -13,9 +13,9 @@
     }
   },
   "bugs": {
-    "url": "https://github.com/Supergiovane/Node-Red/issues"
+    "url": "https://github.com/Supergiovane/node-red-contrib-ui-visu-ultimate/issues"
   },
-  "homepage": "https://github.com/Supergiovane/Node-Red#readme",
+  "homepage": "https://github.com/Supergiovane/node-red-contrib-ui-visu-ultimate#README",
   "dependencies": {
     "fs": "0.0.1-security",
     "mkdirp": "^0.5.1",
