@@ -3,8 +3,10 @@
     ,"node-input-name" : "Name"
     ,"template-row-group" : "Group"
     ,"template-row-size" : "Size"
-    ,"node-input-control" : "Control"
-    ,"node-input-status" : "Status"
+    ,"node-input-control" : "Control (1Bit)"
+    ,"node-input-status" : "Status (1Bit)"
+    ,"node-input-controlPERCENT" : "Control %"
+    ,"node-input-statusPERCENT" : "Status %"
     ,"node-input-iconOn" : "Icon"
     ,"icon-list-link" : "Click here to view the icons!"
     

@@ -21,7 +21,7 @@
                     return valid;
                 }
             },
-            iconOn: { value: "" }
+            iconOn: { value: "light_light" }
 
         },
         inputs: 1,
@@ -75,7 +75,33 @@
                         }));
                     });
                 }, select: function (event, ui) {
-
+                    // Set the name 
+                    var sDevName = ui.item.label.split("#")[1].trim();
+                    try {
+                        sDevName = sDevName.substr(sDevName.indexOf(")") + 1).trim();
+                    } catch (error) {
+                    }
+                    $('#node-input-name').val(sDevName);
+                }
+            });
+            $("#node-input-controlPERCENT").autocomplete({
+                minLength: 1,
+                source: function (request, response) {
+                    $.getJSON("knxUltimatecsv?nodeID=", (data) => {
+                        response($.map(data, function (value, key) {
+                            var sSearch = (value.ga + " (" + value.devicename + ") DPT" + value.dpt);
+                            if (fullSearch(sSearch, request.term)) {
+                                return {
+                                    label: value.ga + " # " + value.devicename + " # " + value.dpt, // Label for Display
+                                    value: value.ga // Value
+                                }
+                            } else {
+                                return null;
+                            }
+                        }));
+                    });
+                }, select: function (event, ui) {
+                   
                 }
             });
             // Autocomplete suggestion with ETS csv File
@@ -99,6 +125,27 @@
 
                 }
             });
+            $("#node-input-statusPERCENT").autocomplete({
+                minLength: 1,
+                source: function (request, response) {
+                    $.getJSON("knxUltimatecsv?nodeID=", (data) => {
+                        response($.map(data, function (value, key) {
+                            var sSearch = (value.ga + " (" + value.devicename + ") DPT" + value.dpt);
+                            if (fullSearch(sSearch, request.term)) {
+                                return {
+                                    label: value.ga + " # " + value.devicename + " # " + value.dpt, // Label for Display
+                                    value: value.ga // Value
+                                }
+                            } else {
+                                return null;
+                            }
+                        }));
+                    });
+                }, select: function (event, ui) {
+
+                }
+            });
+           
             // Autocomplete suggestion with icons
             $("#node-input-iconOn").autocomplete({
                 minLength: 1,
@@ -142,10 +189,6 @@
         <input type="text" id="node-input-server" />
     </div>
 
-    <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-input-name"></span></label>
-        <input type="text" id="node-input-name">
-    </div>
 
     <!-- common input elements for dashboard widget -->
     <div class="form-row" id="template-row-group">
@@ -166,9 +209,23 @@
         <input type="text" id="node-input-control">
     </div>
     <div class="form-row">
-        <label for="node-input-status"><i class="fa fa-tag"></i> <span data-i18n="node-input-status"></span></label>
+        <label for="node-input-controlPERCENT"><i class="fa fa-tag"></i> <span data-i18n="node-input-controlPERCENT"></span></label>
+        <input type="text" id="node-input-controlPERCENT">
+    </div>
+    <div class="form-row">
+        <label for="node-input-statusPERCENT"><i class="fa fa-tag"></i> <span data-i18n="node-input-status"></span></label>
         <input type="text" id="node-input-status">
     </div>
+    <div class="form-row">
+        <label for="node-input-status"><i class="fa fa-tag"></i> <span data-i18n="node-input-statusPERCENT"></span></label>
+        <input type="text" id="node-input-statusPERCENT">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-input-name"></span></label>
+        <input type="text" id="node-input-name">
+    </div>
+
     <div class="form-row">
         <label for="node-input-iconOn" ><i class="fa fa-tag"></i> <span data-i18n="node-input-iconOn"></span> </label>
         <input id="node-input-iconOn">
