@@ -1,34 +1,10 @@
-/**
- * Copyright 2018 Seth350
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- **/
-
-
-/*************************************************************************
- * !!REQUIRED!!
- * A ui-node must always begin with the following function.
- * module.exports = function(RED) {your code here}
- * There is no need to edit this line.
- */
-
 module.exports = function (RED) {
 
     var fs = require('fs');
 
     function checkConfig(node, conf) {
         if (!conf || !conf.hasOwnProperty('group')) {
-            node.error(RED._('Light.error.no-group'));
+            node.error(RED._('ui_switch.error.no-group'));
             return false;
         }
         else {
@@ -40,14 +16,17 @@ module.exports = function (RED) {
         var html = "<style>" + fs.readFileSync(node.fileStyle, "utf8") + "</style>" + fs.readFileSync(node.fileTemplate, "utf8");
         var data = {
             config: config,
-            node: node
+            node: node,
+            uniqueID: node.id.split(".").join("")
         }
         var configAsJson = JSON.stringify(data);
         html += "<input type='hidden' ng-init='init(" + configAsJson + ")'>";
         return html;
     }
+
+
     var ui = undefined;
-    function MyLittleUiNode(config) {
+    function uiswitch(config) {
 
 
         try {
@@ -58,13 +37,10 @@ module.exports = function (RED) {
 
             node.server = RED.nodes.getNode(config.server)
             node.fileStyle = __dirname + "/visu/templates/styles/" + node.server.style;
-            node.fileTemplate = __dirname + "/visu/templates/Light.html";
+            node.fileTemplate = __dirname + "/visu/templates/ui_switch.html";
             node.icon = __dirname + "/visu/icons/ws";
             node.curValOnOff = false;
-            node.control = config.control || "";
-            node.controlPERCENT = config.controlPERCENT || "";
-            node.status = config.status || "";
-            node.statusPERCENT = config.statusPERCENT || "";
+            node.curValPERCENT = 0;
             node.name = config.name || "Light";
 
             node.iconOffHtml = fs.readFileSync(node.icon + "/" + config.iconOn + ".svg", "utf8");
@@ -75,8 +51,8 @@ module.exports = function (RED) {
                 if (ui === undefined) {
                     ui = RED.require("node-red-dashboard")(RED);
                 }
-    
-                var html = HTML(config,node);
+
+                var html = HTML(config, node);
                 var done = ui.addWidget({
                     node: node,                             // *REQUIRED* !!DO NOT EDIT!!
                     order: config.order,                    // *REQUIRED* !!DO NOT EDIT!!
@@ -93,30 +69,56 @@ module.exports = function (RED) {
                     },
                     beforeEmit: function (msg, value) {
                         // make msg.payload accessible as msg.items in widget
-                        return { msg: { items: value } };
+                        return { msg: msg };
                     },
                     beforeSend: function (msg, orig) {
                         if (orig) {
                             return node.HandleFromDash(orig.msg);
-    
-                            //return orig.msg;
                         }
                     },
                     initController: function ($scope, events) {
+
                         $scope.click = function (item, selected) {
-                            $scope.data.node.curValOnOff = !$scope.data.node.curValOnOff;
-                            if ($scope.data.node.curValOnOff) {
-                                $("#iconOnOff").html($scope.data.node.iconOnHtml);
-                            } else {
-                                $("#iconOnOff").html($scope.data.node.iconOffHtml);
+                            if (item == "toggle") {
+                                $scope.data.node.curValOnOff = !$scope.data.node.curValOnOff;
+                                if ($scope.data.node.curValOnOff) {
+                                    $("#iconOnOff" + $scope.data.uniqueID).html($scope.data.node.iconOnHtml);
+                                } else {
+                                    $("#iconOnOff" + $scope.data.uniqueID).html($scope.data.node.iconOffHtml);
+                                }
+                                if (selected) {
+                                    item.selected = selected;
+                                }
+                                $scope.send({ payload: $scope.data.node.curValOnOff, destination: $scope.data.config.control });
+                            } else if (item == "percentMINUS") {
+
+                                $scope.data.node.curValPERCENT -= 20;
+                                if ($scope.data.node.curValPERCENT < 0) $scope.data.node.curValPERCENT = 0;
+                                // Making old 80 things
+                                if ($scope.data.node.curValPERCENT > 0) {
+                                    var activeLine = 10 - ($scope.data.node.curValPERCENT / 10);
+                                    var inactiveLine = 10 - activeLine;
+                                    $("#curValPERCENTString" + $scope.data.uniqueID).html("&nbsp;&nbsp;&nbsp;<font class='superBaseActive'>" + "_".repeat(inactiveLine) + "</font>" + "<font class='superBaseGray'>" + "_".repeat(activeLine));
+
+                                } else {
+                                    $("#curValPERCENTString" + $scope.data.uniqueID).html("&nbsp;&nbsp;&nbsp;<font class='superBaseGray'>" + "_".repeat(10) + "</font>");
+                                }
+
+                            } else if (item == "percentPLUS") {
+                                $scope.data.node.curValPERCENT += 20;
+                                if ($scope.data.node.curValPERCENT > 100) $scope.data.node.curValPERCENT = 100;
+                                // Making old 80 things
+                                if ($scope.data.node.curValPERCENT > 0) {
+                                    var activeLine = 10 - ($scope.data.node.curValPERCENT / 10);
+                                    var inactiveLine = 10 - activeLine;
+                                    $("#curValPERCENTString" + $scope.data.uniqueID).html("&nbsp;&nbsp;&nbsp;<font class='superBaseActive'>" + "_".repeat(inactiveLine) + "</font>" + "<font class='superBaseGray'>" + "_".repeat(activeLine));
+
+                                } else {
+                                    $("#curValPERCENTString" + $scope.data.uniqueID).html("&nbsp;&nbsp;&nbsp;<font class='superBaseActive'>" + "_".repeat(10) + "</font>");
+                                }
                             }
-                            if (selected) {
-                                item.selected = selected;
-                            }
-                            $scope.send({ payload: $scope.data.node.curValOnOff });
-    
                         };
-    
+
                         /*
                         * STORE THE CONFIGURATION FROM NODE-RED FLOW INTO THE DASHBOARD
                         * The configuration (from the node's config screen in the flow editor) should be saved in the $scope.
@@ -128,9 +130,10 @@ module.exports = function (RED) {
                             $scope.data = config; // Imposto i dati da usare nel cazzo di angular di merda.
                             // The configuration contains the default text, which needs to be stored in the scope
                             // (to make sure it will be displayed via the model).
-                            $("#iconOnOff").html($scope.data.node.iconOffHtml);
+                            $("#iconOnOff" + $scope.data.uniqueID).html($scope.data.node.iconOffHtml)
+                            setTimeout(a = () => { $("#iconOnOff" + $scope.data.uniqueID).html($scope.data.node.iconOffHtml) }, 100);
                         };
-    
+
                         /*
                         * HANDLE MESSAGE FROM NODE-RED FLOW TO DASHBOARD
                         * Use $scope.$watch 'msg' to manipulate your user interface when a message from the Node-RED flow arrives.
@@ -141,8 +144,17 @@ module.exports = function (RED) {
                         */
                         $scope.$watch('msg', function (msg) {
                             if (!msg) { return; } // Ignore undefined msg
-                            // The payload contains the new text, which we will store on the scope (in the model)
-                            $scope.iconOnOff = msg.payload;
+
+                            // Control ON/OFF
+                            if (msg.topic === $scope.data.config.control || msg.topic === $scope.data.config.status) {
+                                $scope.data.node.curValOnOff = msg.payload;
+                                if ($scope.data.node.curValOnOff) {
+                                    $("#iconOnOff" + $scope.data.uniqueID).html($scope.data.node.iconOnHtml);
+                                } else {
+                                    $("#iconOnOff" + $scope.data.uniqueID).html($scope.data.node.iconOffHtml);
+                                }
+                            }
+
                         });
 
                     }
@@ -150,24 +162,16 @@ module.exports = function (RED) {
             }
         }
         catch (e) {
-            // eslint-disable-next-line no-console
-            console.warn(e);		// catch any errors that may occur and display them in the web browsers console
-        }
- node.UIToggle = val => {
-
+            RED.log.error("Visu-Ultimate: error " + e);		// catch any errors that may occur and display them in the web browsers console
         }
 
-        node.on("input", function (msg) {
-            node.curValOnOff = msg.payload;
-
-        });
 
 
         node.HandleFromDash = (msg) => {
             RED.log.warn("BANANA " + JSON.stringify(msg))
-            return { payload: msg.payload, destination: node.control }
+            return { msg }
 
-            //RED.log.warn("BANANA " + JSON.stringify(msg))
+
 
         }
         /*******************************************************************
@@ -191,5 +195,5 @@ module.exports = function (RED) {
     * of the function (see line #87) that will return your nodes's configuration.
     * Note: the name must begin with "ui_".
     */
-    RED.nodes.registerType("ui_my-little-ui-node", MyLittleUiNode);
+    RED.nodes.registerType("ui_switch", uiswitch);
 }

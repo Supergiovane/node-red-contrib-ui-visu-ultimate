@@ -10,8 +10,7 @@
   "main": "",
   "node-red": {
     "nodes": {
-      "Light": "nodes/Light.js",
-      "ui_my-little-ui-node": "nodes/ui_my-little-ui-node.js",
+      "ui_switch": "nodes/ui_switch.js",
       "RoomStatus": "nodes/RoomStatus.js",
       "visuConfig": "nodes/visu-config.js"
     }

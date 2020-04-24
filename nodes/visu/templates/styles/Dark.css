@@ -32,7 +32,12 @@ background-image:         linear-gradient( #555555 /*{a-bhover-background-start}
 .superBaseInactive { /*element inactive, like icon Off or text*/
 	color: #fff /*{a-bhover-color}*/;
 	}
-	
+
+.superBaseGray { /*element inactive, like icon Off or text*/
+	color: dimgray /*{a-bhover-color}*/;
+	}
+
+		
 .superBaseMainButton{
 	left: 0px; top: 0px;  min-width: 48px; min-height: 48px;
 	border:0; outline:0;

@@ -37,7 +37,7 @@
     // Your name must also begin with "ui_", otherwise it will not show up in the
     // dashboard tab under it's assigned group.
     // Should you need a space, use a hypen ( - ) instead.
-        RED.nodes.registerType('ui_my-little-ui-node',{
+        RED.nodes.registerType('ui_switch',{
             category: 'dashboard',
         color: 'rgb( 63, 173, 181)',
         defaults: {
@@ -73,7 +73,7 @@
         outputs: 1,
         icon: "cog.png",
         paletteLabel: "visu-ultimate",
-        label: function () { return this.name || "Light"; },
+        label: function () { return this.name || "Switch"; },
         oneditprepare: function () {
             var node = this;
             
@@ -241,7 +241,7 @@
     ** It should be the same name that you are registering with Node-RED (see line #26).
     ***********************************************************************************
     -->
-    <script type="text/x-red" data-template-name="ui_my-little-ui-node">
+    <script type="text/x-red" data-template-name="ui_switch">
         <!-- common input elements for dashboard widget -->
         <div class="form-row" id="template-row-group">
             <label for="node-input-group"><i class="fa fa-table"></i> <span data-i18n="template-row-group"></span></label>
@@ -302,22 +302,4 @@
         </div>
       
     </script>
-    <!--
-    ************************************************************************************
-    ** This next section is where you can write a little info on how your node operates.
-    ** This info will be available in the right side bar when the user clicks on the node,
-    ** and clicks on the info tab.
-    ** We ask that you always enter something here to help other users become familiar
-    ** with your node and know how to interface with it.
-    ** HTML code must be used.
-    ** The data-help-name must be the same name as you have registered this node with.
-    **
-    ** This setion must begin with:
-    ** <script type="text/x-red" data-template-name="ui_yournodenamehere">
-    ** It should be the same name that you are registering with Node-RED (see line #26).
-    ************************************************************************************
-    -->
-    <script type="text/x-red" data-help-name="ui_my-little-ui-node">
-        <p>A Node-RED dashboard ui node to display text with a defined color on the dashboard.</p>
-        <p>Use this node as a template for building your own ui node.</p>
-    </script>
+   
