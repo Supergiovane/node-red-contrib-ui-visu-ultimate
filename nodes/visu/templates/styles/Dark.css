@@ -26,6 +26,14 @@ background-image:      -o-linear-gradient( #555555 /*{a-bhover-background-start}
 background-image:         linear-gradient( #555555 /*{a-bhover-background-start}*/, #383838 /*{a-bhover-background-end}*/);
 }
 
-.superBaseActive {
+.superBaseActive { /*element active, like icon On or text*/
 	color: #FFA121 /*{a-bhover-color}*/;
 	}
+.superBaseInactive { /*element inactive, like icon Off or text*/
+	color: #fff /*{a-bhover-color}*/;
+	}
+	
+.superBaseMainButton{
+	left: 0px; top: 0px;  min-width: 48px; min-height: 48px;
+	border:0; outline:0;
+}

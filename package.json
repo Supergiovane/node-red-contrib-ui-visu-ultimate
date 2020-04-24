@@ -2,12 +2,16 @@
   "name": "node-red-contrib-ui-visu-ultimate",
   "version": "0.0.1",
   "description": "Node-RED UI widget set, specific for home automation and compatible with knx-ultimate node.",
+  "peerDependencies": {
+    "node-red-dashboard": ">2.15.0"
+},
   "author": "Supergiovane",
   "license": "MIT",
   "main": "",
   "node-red": {
     "nodes": {
       "Light": "nodes/Light.js",
+      "ui_my-little-ui-node": "nodes/ui_my-little-ui-node.js",
       "RoomStatus": "nodes/RoomStatus.js",
       "visuConfig": "nodes/visu-config.js"
     }

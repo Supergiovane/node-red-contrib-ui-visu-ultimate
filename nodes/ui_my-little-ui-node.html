@@ -1,6 +1,44 @@
+<!--
+  Copyright 2018, Seth350
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<!--
+***********************************************************************************
+** My Little UI Node
+** This is a template to help you create your very own ui node. This is meant as
+** a quickstart template that will show you what code is required and what code
+** and sections are free for you to change or make additions to.
+**
+***********************************************************************************
+-->
+
+
+<!--
+***********************************************************************************
+** !!REQUIRED!!
+** The .html file must ALWAYS begin with
+**  <script type="text/javascript">
+***********************************************************************************
+-->
 <script type="text/javascript">
-    RED.nodes.registerType("Light", {
-        category: 'dashboard',
+    //*********************************************************************************
+    // !!REQUIRED!!
+    // This line is where you will register your node with a name and configuration.
+    // Your name must be all lower-case letters and without spaces.
+    // Your name must also begin with "ui_", otherwise it will not show up in the
+    // dashboard tab under it's assigned group.
+    // Should you need a space, use a hypen ( - ) instead.
+        RED.nodes.registerType('ui_my-little-ui-node',{
+            category: 'dashboard',
         color: 'rgb( 63, 173, 181)',
         defaults: {
             server: { type: "visu-config", required: true },
@@ -182,75 +220,104 @@
         },
         oneditresize: function (size) {
         }
-    });
-</script>
-
-
-<script type="text/x-red" data-template-name="Light">
-
-    <!-- common input elements for dashboard widget -->
-    <div class="form-row" id="template-row-group">
-        <label for="node-input-group"><i class="fa fa-table"></i> <span data-i18n="template-row-group"></span></label>
-        <input type="text" id="node-input-group">
-    </div>
-    <div class="form-row" id="template-row-size">
-        <label><i class="fa fa-object-group"></i> <span data-i18n="template-row-size"></span></label>
-        <input type="hidden" id="node-input-width">
-        <input type="hidden" id="node-input-height">
-        <button class="editor-button" id="node-input-size"></button>
-    </div>
+        });
+    </script>
     
-    <!-- common input elements for dashboard widget -->
-
-
-    <div class="form-row">
-        <label for="node-input-server">
-            <i class="fa fa-tag"></i> <span data-i18n="node-input-server"></span>
-        </label>
-        <input type="text" id="node-input-server" />
-    </div>
-
-    <!-- CONTROL AND STATUS -->
-    <div class="form-row">
-        <label for="node-input-control"><i class="fa fa-hand-o-right"></i> <span data-i18n="node-input-control"></span></label>
-        <input type="text" id="node-input-control">
-    </div>
-    <div class="form-row">
-        <label for="node-input-controlPERCENT"><i class="fa fa-hand-o-right"></i> <span data-i18n="node-input-controlPERCENT"></span></label>
-        <input type="text" id="node-input-controlPERCENT">
-    </div>
-    <div class="form-row">
-        <label for="node-input-status"><i class="fa fa-info-circle"></i> <span data-i18n="node-input-status"></span></label>
-        <input type="text" id="node-input-status">
-    </div>
-    <div class="form-row">
-        <label for="node-input-statuPERCENT"><i class="fa fa-info-circle"></i> <span data-i18n="node-input-statusPERCENT"></span></label>
-        <input type="text" id="node-input-statusPERCENT">
-    </div>
-    <!-- CONTROL AND STATUS -->
-
-    <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-input-name"></span></label>
-        <input type="text" id="node-input-name">
-    </div>
-
-    <div class="form-row">
-        <label for="node-input-iconOn" ><i class="fa fa-user-circle"></i> <span data-i18n="node-input-iconOn"></span> </label>
-        <input id="node-input-iconOn">
-        <div class="form-tips" style="margin-top: 11px;background-color:#FFEEEE;text-align:center">
-            <b><a target="_blank" href='visuUltimategetIconsHTML'><span data-i18n="icon-list-link"></span></a></b>
+    
+    <!--
+    ***********************************************************************************
+    ** The following section creates the content of your node's config screen (to visualise
+    ** the node properties), which is displayed when you double click your node in the flow
+    ** editor.  The config screen contains both the required widgets (group dropdown, size
+    ** selector, name text box) and widgets to visualise your own custom properties (see
+    ** User Defined Default Values section above).
+    ***********************************************************************************
+    -->
+    
+    <!--
+    ***********************************************************************************
+    ** This setion must begin with:
+    ** <script type="text/x-red" data-template-name="ui_yournodenamehere">
+    ** It should be the same name that you are registering with Node-RED (see line #26).
+    ***********************************************************************************
+    -->
+    <script type="text/x-red" data-template-name="ui_my-little-ui-node">
+        <!-- common input elements for dashboard widget -->
+        <div class="form-row" id="template-row-group">
+            <label for="node-input-group"><i class="fa fa-table"></i> <span data-i18n="template-row-group"></span></label>
+            <input type="text" id="node-input-group">
         </div>
-    </div>
-    <div class="form-row">
-        <div  style="left: 0px; top: 0px;  width: 62px; height: 62px; margin-top: 0px;background-color:dimgray;text-align:center">
-            <div id="iconaSvgOn"></div>
-         </div>
-    </div>
-  
-
-</script>
-
-<script type="text/x-red" data-help-name="Light">
-    <p>A Node-RED dashboard ui node to display text with a defined color on the dashboard.</p>
-    <p>Use this node as a template for building your own ui node.</p>
-</script>
+        <div class="form-row" id="template-row-size">
+            <label><i class="fa fa-object-group"></i> <span data-i18n="template-row-size"></span></label>
+            <input type="hidden" id="node-input-width">
+            <input type="hidden" id="node-input-height">
+            <button class="editor-button" id="node-input-size"></button>
+        </div>
+        
+        <!-- common input elements for dashboard widget -->
+    
+    
+        <div class="form-row">
+            <label for="node-input-server">
+                <i class="fa fa-tag"></i> <span data-i18n="node-input-server"></span>
+            </label>
+            <input type="text" id="node-input-server" />
+        </div>
+    
+        <!-- CONTROL AND STATUS -->
+        <div class="form-row">
+            <label for="node-input-control"><i class="fa fa-hand-o-right"></i> <span data-i18n="node-input-control"></span></label>
+            <input type="text" id="node-input-control">
+        </div>
+        <div class="form-row">
+            <label for="node-input-controlPERCENT"><i class="fa fa-hand-o-right"></i> <span data-i18n="node-input-controlPERCENT"></span></label>
+            <input type="text" id="node-input-controlPERCENT">
+        </div>
+        <div class="form-row">
+            <label for="node-input-status"><i class="fa fa-info-circle"></i> <span data-i18n="node-input-status"></span></label>
+            <input type="text" id="node-input-status">
+        </div>
+        <div class="form-row">
+            <label for="node-input-statuPERCENT"><i class="fa fa-info-circle"></i> <span data-i18n="node-input-statusPERCENT"></span></label>
+            <input type="text" id="node-input-statusPERCENT">
+        </div>
+        <!-- CONTROL AND STATUS -->
+    
+        <div class="form-row">
+            <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-input-name"></span></label>
+            <input type="text" id="node-input-name">
+        </div>
+    
+        <div class="form-row">
+            <label for="node-input-iconOn" ><i class="fa fa-user-circle"></i> <span data-i18n="node-input-iconOn"></span> </label>
+            <input id="node-input-iconOn">
+            <div class="form-tips" style="margin-top: 11px;background-color:#FFEEEE;text-align:center">
+                <b><a target="_blank" href='visuUltimategetIconsHTML'><span data-i18n="icon-list-link"></span></a></b>
+            </div>
+        </div>
+        <div class="form-row">
+            <div  style="left: 0px; top: 0px;  width: 62px; height: 62px; margin-top: 0px;background-color:dimgray;text-align:center">
+                <div id="iconaSvgOn"></div>
+             </div>
+        </div>
+      
+    </script>
+    <!--
+    ************************************************************************************
+    ** This next section is where you can write a little info on how your node operates.
+    ** This info will be available in the right side bar when the user clicks on the node,
+    ** and clicks on the info tab.
+    ** We ask that you always enter something here to help other users become familiar
+    ** with your node and know how to interface with it.
+    ** HTML code must be used.
+    ** The data-help-name must be the same name as you have registered this node with.
+    **
+    ** This setion must begin with:
+    ** <script type="text/x-red" data-template-name="ui_yournodenamehere">
+    ** It should be the same name that you are registering with Node-RED (see line #26).
+    ************************************************************************************
+    -->
+    <script type="text/x-red" data-help-name="ui_my-little-ui-node">
+        <p>A Node-RED dashboard ui node to display text with a defined color on the dashboard.</p>
+        <p>Use this node as a template for building your own ui node.</p>
+    </script>
