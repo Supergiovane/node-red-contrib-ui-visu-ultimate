@@ -81,20 +81,62 @@ module.exports = function (RED) {
                         $scope.click = function (item, selected) {
                             if (item == "toggle") {
                                 $scope.data.node.curValOnOff = !$scope.data.node.curValOnOff;
-                                if ($scope.data.node.curValOnOff) {
-                                    $("#iconOnOff" + $scope.data.uniqueID).html($scope.data.node.iconOnHtml);
-                                } else {
-                                    $("#iconOnOff" + $scope.data.uniqueID).html($scope.data.node.iconOffHtml);
-                                }
+                                AlignUIwithValues();
                                 if (selected) {
                                     item.selected = selected;
                                 }
                                 $scope.send({ payload: $scope.data.node.curValOnOff, destination: $scope.data.config.control });
-                            } else if (item == "percentMINUS") {
 
+                            } else if (item == "percentMINUS") {
                                 $scope.data.node.curValPERCENT -= 20;
                                 if ($scope.data.node.curValPERCENT < 0) $scope.data.node.curValPERCENT = 0;
-                                // Making old 80 things
+                                AutoSwitchIfPercent();
+                                AlignUIwithValues();
+
+                            } else if (item == "percentPLUS") {
+                                $scope.data.node.curValPERCENT += 20;
+                                if ($scope.data.node.curValPERCENT > 100) $scope.data.node.curValPERCENT = 100;
+                                AutoSwitchIfPercent();
+                                AlignUIwithValues();
+                            }
+                        };
+
+                        // Auto switch ON / OFF based on Percentage
+                        function AutoSwitchIfPercent() {
+                            // Switch on if off and off if on
+                            if ($scope.data.node.curValPERCENT > 0) {
+                                if (!Boolean($scope.data.node.curValOnOff)) {
+                                    // Switch on
+                                    $scope.data.node.curValOnOff = true;
+                                    $scope.send({ payload: $scope.data.node.curValOnOff, destination: $scope.data.config.control });
+                                    // Then set the new val
+                                    setTimeout(function () { $scope.send({ payload: $scope.data.node.curValPERCENT, destination: $scope.data.config.controlPERCENT }); }, 1000)
+                                } else {
+                                    // Set the new val
+                                    $scope.send({ payload: $scope.data.node.curValPERCENT, destination: $scope.data.config.controlPERCENT });
+                                }
+                            } else {
+                                // Switch Off
+                                $scope.data.node.curValOnOff = false;
+                                // Set the percent
+                                $scope.send({ payload: $scope.data.node.curValPERCENT, destination: $scope.data.config.controlPERCENT });
+                                // Then switch off
+                                setTimeout(function () { $scope.send({ payload: $scope.data.node.curValOnOff, destination: $scope.data.config.control }); }, 1000);
+                            }
+                        }
+
+                        // Align UI with values in the scope
+                        function AlignUIwithValues() {
+                            // 1 BIT
+                            if ($scope.data.node.curValOnOff) {
+                                $("#iconOnOff" + $scope.data.uniqueID).html($scope.data.node.iconOnHtml);
+                            } else {
+                                $("#iconOnOff" + $scope.data.uniqueID).html($scope.data.node.iconOffHtml);
+                            }
+
+                            // PERCENT
+                            // Making old 80 things
+                            if (typeof $scope.data.config.controlPERCENT !== "undefined" && $scope.data.config.controlPERCENT !== "") {
                                 if ($scope.data.node.curValPERCENT > 0) {
                                     var activeLine = 10 - ($scope.data.node.curValPERCENT / 10);
                                     var inactiveLine = 10 - activeLine;
@@ -103,21 +145,8 @@ module.exports = function (RED) {
                                 } else {
                                     $("#curValPERCENTString" + $scope.data.uniqueID).html("&nbsp;&nbsp;&nbsp;<font class='superBaseGray'>" + "_".repeat(10) + "</font>");
                                 }
-
-                            } else if (item == "percentPLUS") {
-                                $scope.data.node.curValPERCENT += 20;
-                                if ($scope.data.node.curValPERCENT > 100) $scope.data.node.curValPERCENT = 100;
-                                // Making old 80 things
-                                if ($scope.data.node.curValPERCENT > 0) {
-                                    var activeLine = 10 - ($scope.data.node.curValPERCENT / 10);
-                                    var inactiveLine = 10 - activeLine;
-                                    $("#curValPERCENTString" + $scope.data.uniqueID).html("&nbsp;&nbsp;&nbsp;<font class='superBaseActive'>" + "_".repeat(inactiveLine) + "</font>" + "<font class='superBaseGray'>" + "_".repeat(activeLine));
-
-                                } else {
-                                    $("#curValPERCENTString" + $scope.data.uniqueID).html("&nbsp;&nbsp;&nbsp;<font class='superBaseActive'>" + "_".repeat(10) + "</font>");
-                                }
                             }
-                        };
+                        }
 
                         /*
                         * STORE THE CONFIGURATION FROM NODE-RED FLOW INTO THE DASHBOARD
@@ -130,8 +159,14 @@ module.exports = function (RED) {
                             $scope.data = config; // Imposto i dati da usare nel cazzo di angular di merda.
                             // The configuration contains the default text, which needs to be stored in the scope
                             // (to make sure it will be displayed via the model).
-                            $("#iconOnOff" + $scope.data.uniqueID).html($scope.data.node.iconOffHtml)
-                            setTimeout(a = () => { $("#iconOnOff" + $scope.data.uniqueID).html($scope.data.node.iconOffHtml) }, 100);
+                            setTimeout(a = () => {
+                                $("#iconOnOff" + $scope.data.uniqueID).html($scope.data.node.iconOffHtml);
+                                if (typeof $scope.data.config.controlPERCENT === "undefined" || $scope.data.config.controlPERCENT == "") {
+                                    $("#iconMINUS" + $scope.data.uniqueID).hide();
+                                    $("#iconPLUS" + $scope.data.uniqueID).hide();
+                                    $("#curValPERCENTString" + $scope.data.uniqueID).hide();
+                                }
+                            }, 100);
                         };
 
                         /*
@@ -148,12 +183,13 @@ module.exports = function (RED) {
                             // Control ON/OFF
                             if (msg.topic === $scope.data.config.control || msg.topic === $scope.data.config.status) {
                                 $scope.data.node.curValOnOff = msg.payload;
-                                if ($scope.data.node.curValOnOff) {
-                                    $("#iconOnOff" + $scope.data.uniqueID).html($scope.data.node.iconOnHtml);
-                                } else {
-                                    $("#iconOnOff" + $scope.data.uniqueID).html($scope.data.node.iconOffHtml);
-                                }
                             }
+
+                            // Control PERCENT
+                            if (msg.topic === $scope.data.config.controlPERCENT || msg.topic === $scope.data.config.statusPERCENT) {
+                                $scope.data.node.curValPERCENT = msg.payload;
+                            }
+                            AlignUIwithValues();
 
                         });
 
@@ -168,17 +204,10 @@ module.exports = function (RED) {
 
 
         node.HandleFromDash = (msg) => {
-            RED.log.warn("BANANA " + JSON.stringify(msg))
-            return { msg }
-
-
-
+            //RED.log.warn("BANANA " + JSON.stringify(msg))
+            return msg;
         }
-        /*******************************************************************
-        * !!REQUIRED!!
-        * TODO: Get with team on purpose of this node.
-        * There is no need to edit these lines.
-        */
+
         node.on("close", function () {
             if (done) {
                 done();
