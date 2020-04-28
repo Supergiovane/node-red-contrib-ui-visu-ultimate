@@ -4,7 +4,7 @@ module.exports = function (RED) {
 
     function checkConfig(node, conf) {
         if (!conf || !conf.hasOwnProperty('group')) {
-            node.error(RED._('ui_switch.error.no-group'));
+            node.error(RED._('ui-visuultimateroomstatus.error.no-group'));
             return false;
         }
         else {
@@ -24,10 +24,8 @@ module.exports = function (RED) {
         return html;
     }
 
-
     var ui = undefined;
-    function uiswitch(config) {
-
+    function RoomStatusNode(config) {
 
         try {
 
@@ -37,9 +35,9 @@ module.exports = function (RED) {
 
             node.server = RED.nodes.getNode(config.server)
             node.fileStyle = __dirname + "/visu/templates/styles/" + node.server.style;
-            node.fileTemplate = __dirname + "/visu/templates/ui_switch.html";
+            node.fileTemplate = __dirname + "/visu/templates/ui-visuultimateroomstatus.html";
             node.icon = __dirname + "/visu/icons/ws";
-            node.name = config.name || "Light";
+            node.name = config.name || "Room Status";
 
             if (checkConfig(node, config)) {
                 if (ui === undefined) {
@@ -81,12 +79,12 @@ module.exports = function (RED) {
 
                                 $scope.curValOnOff = !$scope.curValOnOff;
                                 $scope.send({ payload: false, destination: $scope.data.config.control });
-                                
+
                                 AlignUIwithValues();
                                 if (selected) {
                                     item.selected = selected;
                                 }
-                                
+
                             } else if (item == "percentMINUS") {
                                 $scope.curValPERCENT -= 20;
                                 if ($scope.curValPERCENT < 0) $scope.curValPERCENT = 0;
@@ -127,14 +125,14 @@ module.exports = function (RED) {
 
                         // Align UI with values in the scope
                         function AlignUIwithValues() {
-                           
+
                             // 1 BIT
                             if ($scope.curValOnOff) {
                                 $("#iconOnOff" + $scope.uniqueID).html($scope.iconOnHtml);
                             } else {
                                 $("#iconOnOff" + $scope.uniqueID).html($scope.iconOffHtml);
                             }
-                           
+
                             // PERCENT
                             // Making old 80 things
                             if (typeof $scope.data.config.controlPERCENT !== "undefined" && $scope.data.config.controlPERCENT !== "") {
@@ -154,7 +152,7 @@ module.exports = function (RED) {
                             }
                         }
 
-                       
+
                         /*
                         * STORE THE CONFIGURATION FROM NODE-RED FLOW INTO THE DASHBOARD
                         * The configuration (from the node's config screen in the flow editor) should be saved in the $scope.
@@ -166,11 +164,11 @@ module.exports = function (RED) {
                             $scope.data = data;
                             $scope.iconOnHtml = data.iconOnHtml;
                             $scope.iconOffHtml = data.iconOffHtml;
-                           
+
                             //node.curValOnOff = true;
                             $(document).ready(function () {
                                 AlignUIwithValues();
-                             
+
                             });
                         };
 
@@ -184,7 +182,7 @@ module.exports = function (RED) {
                         */
                         $scope.$watch('msg', function (msg) {
                             if (!msg) { return; } // Ignore undefined msg
-                          
+
                             // Control ON/OFF
                             if (msg.topic === $scope.data.config.control || msg.topic === $scope.data.config.status) {
                                 $scope.curValOnOff = msg.payload;
@@ -226,5 +224,5 @@ module.exports = function (RED) {
     * of the function (see line #87) that will return your nodes's configuration.
     * Note: the name must begin with "ui_".
     */
-    RED.nodes.registerType("ui_switch", uiswitch);
+    RED.nodes.registerType("ui_ui-visuultimateroomstatus", RoomStatusNode);
 }

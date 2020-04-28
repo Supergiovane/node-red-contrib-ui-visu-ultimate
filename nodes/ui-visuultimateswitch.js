@@ -4,7 +4,7 @@ module.exports = function (RED) {
 
     function checkConfig(node, conf) {
         if (!conf || !conf.hasOwnProperty('group')) {
-            node.error(RED._('ui_roomstatus.error.no-group'));
+            node.error(RED._('ui-visuultimateswitch.error.no-group'));
             return false;
         }
         else {
@@ -26,7 +26,7 @@ module.exports = function (RED) {
 
 
     var ui = undefined;
-    function uiroomstatus(config) {
+    function uiswitch(config) {
 
 
         try {
@@ -37,9 +37,9 @@ module.exports = function (RED) {
 
             node.server = RED.nodes.getNode(config.server)
             node.fileStyle = __dirname + "/visu/templates/styles/" + node.server.style;
-            node.fileTemplate = __dirname + "/visu/templates/ui_roomstatus.html";
+            node.fileTemplate = __dirname + "/visu/templates/ui-visuultimateswitch.html";
             node.icon = __dirname + "/visu/icons/ws";
-            node.name = config.name || "Room Status";
+            node.name = config.name || "Light";
 
             if (checkConfig(node, config)) {
                 if (ui === undefined) {
@@ -226,5 +226,5 @@ module.exports = function (RED) {
     * of the function (see line #87) that will return your nodes's configuration.
     * Note: the name must begin with "ui_".
     */
-    RED.nodes.registerType("ui_roomstatus", uiroomstatus);
+    RED.nodes.registerType("ui_ui-visuultimateswitch", uiswitch);
 }

@@ -1,34 +1,3 @@
-<!--
-  Copyright 2018, Seth350
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-  http://www.apache.org/licenses/LICENSE-2.0
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
--->
-
-<!--
-***********************************************************************************
-** My Little UI Node
-** This is a template to help you create your very own ui node. This is meant as
-** a quickstart template that will show you what code is required and what code
-** and sections are free for you to change or make additions to.
-**
-***********************************************************************************
--->
-
-
-<!--
-***********************************************************************************
-** !!REQUIRED!!
-** The .html file must ALWAYS begin with
-**  <script type="text/javascript">
-***********************************************************************************
--->
 <script type="text/javascript">
     //*********************************************************************************
     // !!REQUIRED!!
@@ -37,8 +6,8 @@
     // Your name must also begin with "ui_", otherwise it will not show up in the
     // dashboard tab under it's assigned group.
     // Should you need a space, use a hypen ( - ) instead.
-        RED.nodes.registerType('ui_switch',{
-            category: 'dashboard',
+        RED.nodes.registerType('ui_ui-visuultimateroomstatus',{
+            category: 'Visu Ultimate Dashboard',
         color: 'rgb( 63, 173, 181)',
         defaults: {
             server: { type: "visu-config", required: true },
@@ -72,8 +41,8 @@
         inputs: 1,
         outputs: 1,
         icon: "cog.png",
-        paletteLabel: "visu-ultimate",
-        label: function () { return this.name || "Switch"; },
+        paletteLabel: "Room Status",
+        label: function () { return this.name || "Room Status"; },
         oneditprepare: function () {
             var node = this;
             
@@ -241,7 +210,7 @@
     ** It should be the same name that you are registering with Node-RED (see line #26).
     ***********************************************************************************
     -->
-    <script type="text/x-red" data-template-name="ui_switch">
+    <script type="text/x-red" data-template-name="ui_ui-visuultimateroomstatus">
         <!-- common input elements for dashboard widget -->
         <div class="form-row" id="template-row-group">
             <label for="node-input-group"><i class="fa fa-table"></i> <span data-i18n="template-row-group"></span></label>

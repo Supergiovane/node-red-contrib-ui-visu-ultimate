@@ -1,31 +1,30 @@
 {
   "name": "node-red-contrib-ui-visu-ultimate",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Node-RED UI widget set, specific for home automation and compatible with knx-ultimate node.",
-  "peerDependencies": {
-    "node-red-dashboard": ">2.15.0"
-},
-  "author": "Supergiovane",
-  "license": "MIT",
-  "main": "",
-  "node-red": {
-    "nodes": {
-      "ui_switch": "nodes/ui_switch.js",
-      "ui_roomstatus": "nodes/ui_roomstatus.js",
-      "visuConfig": "nodes/visu-config.js"
-    }
-  },
-  "bugs": {
-    "url": "https://github.com/Supergiovane/node-red-contrib-ui-visu-ultimate/issues"
-  },
-  "homepage": "https://github.com/Supergiovane/node-red-contrib-ui-visu-ultimate#README",
   "dependencies": {
     "fs": "0.0.1-security",
     "mkdirp": "^0.5.1",
     "path": "^0.12.7"
   },
-  "devDependencies": {},
-  "engines": {
-    "node": ">=8.9.4"
-  }
+  "node-red": {
+    "nodes": {
+      "ui_ui-visuultimateswitch": "nodes/ui-visuultimateswitch.js",
+      "ui_ui-visuultimateroomstatus": "nodes/ui-visuultimateroomstatus.js",
+      "visu-config": "nodes/visu-config.js"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Supergiovane/node-red-contrib-ui-visu-ultimate.git"
+  },
+  "keywords": [
+    "node-red",
+    "visualization",
+    "dashboard",
+    "home automation",
+    "IOT"
+  ],
+  "author": "Supergiovane",
+  "license": "MIT"
 }
