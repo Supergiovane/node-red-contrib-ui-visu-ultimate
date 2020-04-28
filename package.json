@@ -11,7 +11,7 @@
   "node-red": {
     "nodes": {
       "ui_switch": "nodes/ui_switch.js",
-      "RoomStatus": "nodes/RoomStatus.js",
+      "ui_roomstatus": "nodes/ui_roomstatus.js",
       "visuConfig": "nodes/visu-config.js"
     }
   },
