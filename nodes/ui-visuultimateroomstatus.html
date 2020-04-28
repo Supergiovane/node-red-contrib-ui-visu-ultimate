@@ -6,8 +6,8 @@
     // Your name must also begin with "ui_", otherwise it will not show up in the
     // dashboard tab under it's assigned group.
     // Should you need a space, use a hypen ( - ) instead.
-        RED.nodes.registerType('ui_ui-visuultimateroomstatus',{
-            category: 'Visu Ultimate Dashboard',
+    RED.nodes.registerType('ui_ui-visuultimateroomstatus', {
+        category: 'Visu Ultimate Dashboard',
         color: 'rgb( 63, 173, 181)',
         defaults: {
             server: { type: "visu-config", required: true },
@@ -29,8 +29,8 @@
             height: { value: 0 },
 
             name: { value: "" },
-            textLabel: {value:'Light'},
-            textColor: {value:'#000000'},
+            textLabel: { value: 'Light' },
+            textColor: { value: '#000000' },
             iconOn: { value: "light_light" },
             control: { value: "" },
             controlPERCENT: { value: "" },
@@ -45,7 +45,7 @@
         label: function () { return this.name || "Room Status"; },
         oneditprepare: function () {
             var node = this;
-            
+
             // use elementSize to input common widget parameters
             $("#node-input-size").elementSizer({
                 width: "#node-input-width",
@@ -114,7 +114,7 @@
                         }));
                     });
                 }, select: function (event, ui) {
-                   
+
                 }
             });
             // Autocomplete suggestion with ETS csv File
@@ -158,7 +158,7 @@
 
                 }
             });
-           
+
             // Autocomplete suggestion with icons
             $("#node-input-iconOn").autocomplete({
                 minLength: 1,
@@ -189,86 +189,74 @@
         },
         oneditresize: function (size) {
         }
-        });
-    </script>
-    
-    
-    <!--
-    ***********************************************************************************
-    ** The following section creates the content of your node's config screen (to visualise
-    ** the node properties), which is displayed when you double click your node in the flow
-    ** editor.  The config screen contains both the required widgets (group dropdown, size
-    ** selector, name text box) and widgets to visualise your own custom properties (see
-    ** User Defined Default Values section above).
-    ***********************************************************************************
-    -->
-    
-    <!--
-    ***********************************************************************************
-    ** This setion must begin with:
-    ** <script type="text/x-red" data-template-name="ui_yournodenamehere">
-    ** It should be the same name that you are registering with Node-RED (see line #26).
-    ***********************************************************************************
-    -->
-    <script type="text/x-red" data-template-name="ui_ui-visuultimateroomstatus">
+    });
+</script>
+
+
+
+<script type="text/x-red" data-template-name="ui_ui-visuultimateroomstatus">
         <!-- common input elements for dashboard widget -->
-        <div class="form-row" id="template-row-group">
-            <label for="node-input-group"><i class="fa fa-table"></i> <span data-i18n="template-row-group"></span></label>
-            <input type="text" id="node-input-group">
-        </div>
-        <div class="form-row" id="template-row-size">
-            <label><i class="fa fa-object-group"></i> <span data-i18n="template-row-size"></span></label>
-            <input type="hidden" id="node-input-width">
-            <input type="hidden" id="node-input-height">
-            <button class="editor-button" id="node-input-size"></button>
-        </div>
-        
-        <!-- common input elements for dashboard widget -->
-    
-    
-        <div class="form-row">
-            <label for="node-input-server">
-                <i class="fa fa-tag"></i> <span data-i18n="node-input-server"></span>
-            </label>
-            <input type="text" id="node-input-server" />
-        </div>
-    
-        <!-- CONTROL AND STATUS -->
-        <div class="form-row">
-            <label for="node-input-control"><i class="fa fa-hand-o-right"></i> <span data-i18n="node-input-control"></span></label>
-            <input type="text" id="node-input-control">
-        </div>
-        <div class="form-row">
-            <label for="node-input-controlPERCENT"><i class="fa fa-hand-o-right"></i> <span data-i18n="node-input-controlPERCENT"></span></label>
-            <input type="text" id="node-input-controlPERCENT">
-        </div>
-        <div class="form-row">
-            <label for="node-input-status"><i class="fa fa-info-circle"></i> <span data-i18n="node-input-status"></span></label>
-            <input type="text" id="node-input-status">
-        </div>
-        <div class="form-row">
-            <label for="node-input-statuPERCENT"><i class="fa fa-info-circle"></i> <span data-i18n="node-input-statusPERCENT"></span></label>
-            <input type="text" id="node-input-statusPERCENT">
-        </div>
-        <!-- CONTROL AND STATUS -->
-    
-        <div class="form-row">
-            <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-input-name"></span></label>
-            <input type="text" id="node-input-name">
-        </div>
-    
-        <div class="form-row">
-            <label for="node-input-iconOn" ><i class="fa fa-user-circle"></i> <span data-i18n="node-input-iconOn"></span> </label>
-            <input id="node-input-iconOn">
-            <div class="form-tips" style="margin-top: 11px;background-color:#FFEEEE;text-align:center">
-                <b><a target="_blank" href='visuUltimategetIconsHTML'><span data-i18n="icon-list-link"></span></a></b>
-            </div>
-        </div>
-        <div class="form-row">
-            <div  style="left: 0px; top: 0px;  width: 62px; height: 62px; margin-top: 0px;background-color:dimgray;text-align:center">
-                <div id="iconaSvgOn"></div>
-             </div>
-        </div>
-      
-    </script>
-   
+<div class="form-row" id="template-row-group">
+    <label for="node-input-group"><i class="fa fa-table"></i> <span data-i18n="template-row-group"></span></label>
+    <input type="text" id="node-input-group">
+</div>
+<div class="form-row" id="template-row-size">
+    <label><i class="fa fa-object-group"></i> <span data-i18n="template-row-size"></span></label>
+    <input type="hidden" id="node-input-width">
+    <input type="hidden" id="node-input-height">
+    <button class="editor-button" id="node-input-size"></button>
+</div>
+
+<!-- common input elements for dashboard widget -->
+
+
+<div class="form-row">
+    <label for="node-input-server">
+        <i class="fa fa-tag"></i> <span data-i18n="node-input-server"></span>
+    </label>
+    <input type="text" id="node-input-server" />
+</div>
+
+<!-- CONTROL AND STATUS -->
+<div class="form-row">
+    <label for="node-input-control"><i class="fa fa-hand-o-right"></i> <span
+            data-i18n="node-input-control"></span></label>
+    <input type="text" id="node-input-control">
+</div>
+<div class="form-row">
+    <label for="node-input-controlPERCENT"><i class="fa fa-hand-o-right"></i> <span
+            data-i18n="node-input-controlPERCENT"></span></label>
+    <input type="text" id="node-input-controlPERCENT">
+</div>
+<div class="form-row">
+    <label for="node-input-status"><i class="fa fa-info-circle"></i> <span data-i18n="node-input-status"></span></label>
+    <input type="text" id="node-input-status">
+</div>
+<div class="form-row">
+    <label for="node-input-statuPERCENT"><i class="fa fa-info-circle"></i> <span
+            data-i18n="node-input-statusPERCENT"></span></label>
+    <input type="text" id="node-input-statusPERCENT">
+</div>
+<!-- CONTROL AND STATUS -->
+
+<div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-input-name"></span></label>
+    <input type="text" id="node-input-name">
+</div>
+
+<div class="form-row">
+    <label for="node-input-iconOn"><i class="fa fa-user-circle"></i> <span data-i18n="node-input-iconOn"></span>
+    </label>
+    <input id="node-input-iconOn">
+    <div class="form-tips" style="margin-top: 11px;background-color:#FFEEEE;text-align:center">
+        <b><a target="_blank" href='visuUltimategetIconsHTML'><span data-i18n="icon-list-link"></span></a></b>
+    </div>
+</div>
+<div class="form-row">
+    <div
+        style="left: 0px; top: 0px;  width: 62px; height: 62px; margin-top: 0px;background-color:dimgray;text-align:center">
+        <div id="iconaSvgOn"></div>
+    </div>
+</div>
+
+</script>
