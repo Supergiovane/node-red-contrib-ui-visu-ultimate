@@ -51,7 +51,7 @@
                 });
             }
 
-            // 31/03/2020 Search Helper
+            // 30/04/2020 Search Helper
             function fullSearch(sourceText, searchString) {
                 // This searches for all words in a string
                 var aSearchWords = searchString.toLowerCase().split(" ");
@@ -68,7 +68,6 @@
             function extractLast(term) {
                 return split(term).pop();
             }
-
             // Autocomplete suggestion with icons
             $("#node-input-iconOn").autocomplete({
                 minLength: 1,
@@ -116,7 +115,6 @@
                         whiteSpace: 'nowrap'
                     });
                     // New empty row
-                    alert(JSON.stringify(rule))
                     if (!rule.hasOwnProperty("RowInTemplate")) {
                         rule.RowInTemplate = "down"
                         rule.RegoleIcona = '{"val":"0","icon":"light_light","col":"0"}, {"val":"1","icon":"light_light","col":"1"}'
@@ -197,8 +195,6 @@
             }
             // END RULE CONTAINER
 
-
-
         },
         oneditsave: function () {
             var node = this;
@@ -208,7 +204,6 @@
             node.rules = [];
             rules.each(function (i) {
                 var rule = $(this);
-                alert(JSON.stringify(rule))
                 var oRowInTemplate = rule.find(".oRowInTemplate").val();
                 var oTopicField = rule.find(".oTopicField").val();
                 var oRegoleIcona = rule.find(".oRegoleIcona").val();
@@ -272,8 +267,7 @@
     <input id="node-input-iconOn">
 </div>
 <div class="form-row">
-    <div
-        style="left: 0px; top: 0px;  width: 62px; height: 62px; margin-top: 0px;background-color:dimgray;text-align:center">
+    <div style="left: 0px; top: 0px;  width: 62px; height: 62px; margin-top: 0px;background-color:dimgray;text-align:center">
         <div id="iconaSvgOn"></div>
     </div>
     <div class="form-tips" style="margin-top: 11px;background-color:#FFEEEE;text-align:center">
