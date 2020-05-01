@@ -1,11 +1,4 @@
 <script type="text/javascript">
-    //*********************************************************************************
-    // !!REQUIRED!!
-    // This line is where you will register your node with a name and configuration.
-    // Your name must be all lower-case letters and without spaces.
-    // Your name must also begin with "ui_", otherwise it will not show up in the
-    // dashboard tab under it's assigned group.
-    // Should you need a space, use a hypen ( - ) instead.
     RED.nodes.registerType('ui_ui-visuultimateroomstatus', {
         category: 'Visu Ultimate Dashboard',
         color: 'rgb( 63, 173, 181)',
@@ -29,13 +22,11 @@
             height: { value: 0 },
 
             name: { value: "" },
-            textLabel: { value: 'Light' },
-            textColor: { value: '#000000' },
-            iconOn: { value: "light_light" },
-            control: { value: "" },
-            controlPERCENT: { value: "" },
-            status: { value: "" },
-            statusPERCENT: { value: "" }
+            iconOn: { value: "scene_living" },
+
+            rules: { value: [{ t: "eq", v: "", vt: "str" }] }
+
+
 
         },
         inputs: 1,
@@ -71,93 +62,12 @@
                 return i == aSearchWords.length;
             }
             // Autocomplete suggestion with ETS csv File
-            $("#node-input-control").autocomplete({
-                minLength: 1,
-                source: function (request, response) {
-                    $.getJSON("knxUltimatecsv?nodeID=", (data) => {
-                        response($.map(data, function (value, key) {
-                            var sSearch = (value.ga + " (" + value.devicename + ") DPT" + value.dpt);
-                            if (fullSearch(sSearch, request.term)) {
-                                return {
-                                    label: value.ga + " # " + value.devicename + " # " + value.dpt, // Label for Display
-                                    value: value.ga // Value
-                                }
-                            } else {
-                                return null;
-                            }
-                        }));
-                    });
-                }, select: function (event, ui) {
-                    // Set the name 
-                    var sDevName = ui.item.label.split("#")[1].trim();
-                    try {
-                        sDevName = sDevName.substr(sDevName.indexOf(")") + 1).trim();
-                    } catch (error) {
-                    }
-                    $('#node-input-name').val(sDevName);
-                }
-            });
-            $("#node-input-controlPERCENT").autocomplete({
-                minLength: 1,
-                source: function (request, response) {
-                    $.getJSON("knxUltimatecsv?nodeID=", (data) => {
-                        response($.map(data, function (value, key) {
-                            var sSearch = (value.ga + " (" + value.devicename + ") DPT" + value.dpt);
-                            if (fullSearch(sSearch, request.term)) {
-                                return {
-                                    label: value.ga + " # " + value.devicename + " # " + value.dpt, // Label for Display
-                                    value: value.ga // Value
-                                }
-                            } else {
-                                return null;
-                            }
-                        }));
-                    });
-                }, select: function (event, ui) {
-
-                }
-            });
-            // Autocomplete suggestion with ETS csv File
-            $("#node-input-status").autocomplete({
-                minLength: 1,
-                source: function (request, response) {
-                    $.getJSON("knxUltimatecsv?nodeID=", (data) => {
-                        response($.map(data, function (value, key) {
-                            var sSearch = (value.ga + " (" + value.devicename + ") DPT" + value.dpt);
-                            if (fullSearch(sSearch, request.term)) {
-                                return {
-                                    label: value.ga + " # " + value.devicename + " # " + value.dpt, // Label for Display
-                                    value: value.ga // Value
-                                }
-                            } else {
-                                return null;
-                            }
-                        }));
-                    });
-                }, select: function (event, ui) {
-
-                }
-            });
-            $("#node-input-statusPERCENT").autocomplete({
-                minLength: 1,
-                source: function (request, response) {
-                    $.getJSON("knxUltimatecsv?nodeID=", (data) => {
-                        response($.map(data, function (value, key) {
-                            var sSearch = (value.ga + " (" + value.devicename + ") DPT" + value.dpt);
-                            if (fullSearch(sSearch, request.term)) {
-                                return {
-                                    label: value.ga + " # " + value.devicename + " # " + value.dpt, // Label for Display
-                                    value: value.ga // Value
-                                }
-                            } else {
-                                return null;
-                            }
-                        }));
-                    });
-                }, select: function (event, ui) {
-
-                }
-            });
+            function split(val) {
+                return val.split(/,\s*/);
+            }
+            function extractLast(term) {
+                return split(term).pop();
+            }
 
             // Autocomplete suggestion with icons
             $("#node-input-iconOn").autocomplete({
@@ -184,10 +94,145 @@
                 }
             });
 
+
+            // RULE CONTAINER
+            var previousValueType = { value: "prev", label: this._("switch.previous"), hasValue: false };
+            function resizeRule(rule) { }
+            $("#node-input-rule-container").css('min-height', '500px').css('min-width', '450px').editableList({
+                addItem: function (container, i, opt) { // row, index, data
+                    // opt.r is: { topic: rowRuleTopic, devicename: rowRuleDeviceName, dpt:rowRuleDPT, send: rowRuleSend}
+                    var rule = null;
+
+                    if (!opt.hasOwnProperty('r')) {
+                        opt.r = {};
+                    }
+
+                    rule = opt.r;
+                    if (!opt.hasOwnProperty('i')) {
+                        opt._i = Math.floor((0x99999 - 0x10000) * Math.random()).toString();
+                    }
+                    container.css({
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap'
+                    });
+                    // New empty row
+                    alert(JSON.stringify(rule))
+                    if (!rule.hasOwnProperty("RowInTemplate")) {
+                        rule.RowInTemplate = "down"
+                        rule.RegoleIcona = '{"val":"0","icon":"light_light","col":"0"}, {"val":"1","icon":"light_light","col":"1"}'
+                    }
+
+                    var row = $('<div class="form-row"/>').appendTo(container);
+                    var row2 = $('<div class="form-row"/>', { style: "padding-top: 5px; padding-left: 5px;" }).appendTo(container);
+                    var oRowInTemplate = $('<select/>', { class: "oRowInTemplate", type: "text", style: "width:100px; margin-left: 2px; text-align: left;" }).appendTo(row);
+                    var oTopicField = $("<input/>", { class: "oTopicField", type: "text", placeholder: "Input topic to evaluate, separated by comma", style: "width:70%; margin-left: 5px; text-align: left;" }).appendTo(row);
+                    var finalspan = $('<span/>', { style: "" }).appendTo(row);
+                    var oRegoleIcona = $('<input/>', { class: "oRegoleIcona", type: "text", style: "width:100%; margin-left: 0px; text-align: left;font-style: italic;", placeholder: '{"val":"0","icon":"light_light","col":"0"}, {"val":"1","icon":"light_light","col":"1"}, {"val":"3","text":"Temperature: @°c","col":"0"}' }).appendTo(row2);
+
+                    oTopicField.on("change", function () {
+                        resizeRule(container);
+                    });
+
+                    oRowInTemplate.append($("<option></option>")
+                        .attr("value", "up")
+                        .text(node._("oRowInTemplate.up")));
+                    oRowInTemplate.append($("<option></option>")
+                        .attr("value", "down")
+                        .text(node._("oRowInTemplate.down")));
+
+                    // Autocomplete suggestion with ETS csv File
+                    oTopicField// don't navigate away from the field on tab when selecting an item
+                        .on("keydown", function (event) {
+                            if (event.keyCode === $.ui.keyCode.TAB &&
+                                $(this).autocomplete("instance").menu.active) {
+                                event.preventDefault();
+                            }
+                        })
+                        .autocomplete({
+                            minLength: 1,
+                            source: function (request, response) {
+                                $.getJSON("knxUltimatecsv?nodeID=", (data) => {
+                                    response($.map(data, function (value, key) {
+                                        var sSearch = (value.ga + " (" + value.devicename + ") DPT" + value.dpt);
+                                        if (fullSearch(sSearch, extractLast(request.term))) {
+                                            return {
+                                                label: value.ga + " # " + value.devicename + " # " + value.dpt, // Label for Display
+                                                value: value.ga // Value
+                                            }
+                                        } else {
+                                            return null;
+                                        }
+                                    }));
+                                });
+                            }, select: function (event, ui) {
+                                var terms = split(this.value);
+                                // remove the current input
+                                terms.pop();
+                                // add the selected item
+                                terms.push(ui.item.value);
+                                // add placeholder to get the comma-and-space at the end
+                                terms.push("");
+                                this.value = terms.join(", ");
+                                return false;
+                            }
+                        });
+
+                    oRowInTemplate.val(rule.RowInTemplate);
+                    oTopicField.val(rule.TopicField);
+                    oRegoleIcona.val(rule.RegoleIcona);
+                },
+                removeItem: function (opt) {
+                },
+                resizeItem: resizeRule,
+                sortItems: function (rules) {
+                },
+                sortable: true,
+                removable: true
+            });
+
+            // 10/03/2020 For each rule, create a row
+            for (var i = 0; i < this.rules.length; i++) {
+                var rule = this.rules[i];
+                $("#node-input-rule-container").editableList('addItem', { r: rule, i: i });
+            }
+            // END RULE CONTAINER
+
+
+
         },
         oneditsave: function () {
+            var node = this;
+
+            // RULE CONTAINER
+            var rules = $("#node-input-rule-container").editableList('items');
+            node.rules = [];
+            rules.each(function (i) {
+                var rule = $(this);
+                alert(JSON.stringify(rule))
+                var oRowInTemplate = rule.find(".oRowInTemplate").val();
+                var oTopicField = rule.find(".oTopicField").val();
+                var oRegoleIcona = rule.find(".oRegoleIcona").val();
+                node.rules.push({ RowInTemplate: oRowInTemplate, TopicField: oTopicField, RegoleIcona: oRegoleIcona });
+            });
+            // END RULE CONTAINER
+
         },
         oneditresize: function (size) {
+            var node = this;
+
+            // RULE CONTAINER
+            var rows = $("#dialog-form>div:not(.node-input-rule-container-row)");
+            var height = size.height;
+            for (var i = 0; i < rows.length; i++) {
+                height -= $(rows[i]).outerHeight(true);
+            }
+            var editorRow = $("#dialog-form>div.node-input-rule-container-row");
+            height -= (parseInt(editorRow.css("marginTop")) + parseInt(editorRow.css("marginBottom")));
+            height += 16;
+            $("#node-input-rule-container").editableList('height', height);
+            // END RULE CONTAINER
+
+
         }
     });
 </script>
@@ -195,7 +240,7 @@
 
 
 <script type="text/x-red" data-template-name="ui_ui-visuultimateroomstatus">
-        <!-- common input elements for dashboard widget -->
+ <!-- common input elements for dashboard widget -->
 <div class="form-row" id="template-row-group">
     <label for="node-input-group"><i class="fa fa-table"></i> <span data-i18n="template-row-group"></span></label>
     <input type="text" id="node-input-group">
@@ -206,7 +251,6 @@
     <input type="hidden" id="node-input-height">
     <button class="editor-button" id="node-input-size"></button>
 </div>
-
 <!-- common input elements for dashboard widget -->
 
 
@@ -217,28 +261,6 @@
     <input type="text" id="node-input-server" />
 </div>
 
-<!-- CONTROL AND STATUS -->
-<div class="form-row">
-    <label for="node-input-control"><i class="fa fa-hand-o-right"></i> <span
-            data-i18n="node-input-control"></span></label>
-    <input type="text" id="node-input-control">
-</div>
-<div class="form-row">
-    <label for="node-input-controlPERCENT"><i class="fa fa-hand-o-right"></i> <span
-            data-i18n="node-input-controlPERCENT"></span></label>
-    <input type="text" id="node-input-controlPERCENT">
-</div>
-<div class="form-row">
-    <label for="node-input-status"><i class="fa fa-info-circle"></i> <span data-i18n="node-input-status"></span></label>
-    <input type="text" id="node-input-status">
-</div>
-<div class="form-row">
-    <label for="node-input-statuPERCENT"><i class="fa fa-info-circle"></i> <span
-            data-i18n="node-input-statusPERCENT"></span></label>
-    <input type="text" id="node-input-statusPERCENT">
-</div>
-<!-- CONTROL AND STATUS -->
-
 <div class="form-row">
     <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-input-name"></span></label>
     <input type="text" id="node-input-name">
@@ -248,15 +270,28 @@
     <label for="node-input-iconOn"><i class="fa fa-user-circle"></i> <span data-i18n="node-input-iconOn"></span>
     </label>
     <input id="node-input-iconOn">
-    <div class="form-tips" style="margin-top: 11px;background-color:#FFEEEE;text-align:center">
-        <b><a target="_blank" href='visuUltimategetIconsHTML'><span data-i18n="icon-list-link"></span></a></b>
-    </div>
 </div>
 <div class="form-row">
     <div
         style="left: 0px; top: 0px;  width: 62px; height: 62px; margin-top: 0px;background-color:dimgray;text-align:center">
         <div id="iconaSvgOn"></div>
     </div>
+    <div class="form-tips" style="margin-top: 11px;background-color:#FFEEEE;text-align:center">
+        <b><a target="_blank" href='visuUltimategetIconsHTML'><span data-i18n="icon-list-link"></span></a></b>
+    </div>
 </div>
+
+<!-- RULE CONTAINER -->
+<div>
+    <dt><i class="fa fa-code-fork"></i>&nbsp; <span data-i18n="node-input-rule-container"></dt>
+    <div class="form-row node-input-rule-container-row">
+        <ol id="node-input-rule-container"></ol>
+    </div>
+
+    <div class="form-row">
+        <p><span data-i18n="node-input-rule-containerADD"></p>
+    </div>
+</div>
+<!-- RULE CONTAINER -->
 
 </script>

@@ -178,18 +178,13 @@ module.exports = function (RED) {
                         * HANDLE MESSAGE FROM NODE-RED FLOW TO DASHBOARD
                         * Use $scope.$watch 'msg' to manipulate your user interface when a message from the Node-RED flow arrives.
                         * As soon as the message arrives in the dashboard, the callback function will be executed.
-                        * Inside the callback function, you can manipulate your node's HTML attributes and elements.  That way you
-                        * can update the dashboard based on data from the input message.
-                        * E.g. change the text color based on the value of msg.color.
                         */
                         $scope.$watch('msg', function (msg) {
                             if (!msg) { return; } // Ignore undefined msg
-                          
                             // Control ON/OFF
                             if (msg.topic === $scope.data.config.control || msg.topic === $scope.data.config.status) {
                                 $scope.curValOnOff = msg.payload;
                             }
-
                             // Control PERCENT
                             if (msg.topic === $scope.data.config.controlPERCENT || msg.topic === $scope.data.config.statusPERCENT) {
                                 $scope.curValPERCENT = msg.payload;

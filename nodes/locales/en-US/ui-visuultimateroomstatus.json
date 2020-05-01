@@ -1,14 +1,15 @@
 {
      "node-input-server" : "Config"
-    ,"node-input-name" : "Name"
+    ,"node-input-name" : "Room name"
     ,"template-row-group" : "Group"
     ,"template-row-size" : "Size"
-    ,"node-input-control" : "Control (1Bit)"
-    ,"node-input-status" : "Status (1Bit)"
-    ,"node-input-controlPERCENT" : "Control %"
-    ,"node-input-statusPERCENT" : "Status %"
-    ,"node-input-iconOn" : "Icon"
+    ,"node-input-rule-container" : "SIGNALLING ICONS AND VALUES"
+    ,"node-input-rule-containerADD" : "Click the button to add a new row in the list above."
+    ,"node-input-iconOn" : "Room icon"
     ,"icon-list-link" : "Click here to view the icons!"
-    
+    , "oRowInTemplate":{
+        "up":"Upper Row"
+        ,"down":"Lower Row"
+    }
  
 }

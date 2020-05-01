@@ -11,7 +11,7 @@
 
 .superBase {
 font-family: Dosis, Helvetica, Arial, sans-serif;
-border: 1px solid #444 /*{a-body-border}*/;
+border: 0px solid #444; outline:0;/*{a-body-border}*/;
 color: #fff /*{a-body-color}*/;
 text-shadow: 0 /*{a-body-shadow-x}*/ 1px /*{a-body-shadow-y}*/ 1px /*{a-body-shadow-radius}*/ #111 /*{a-body-shadow-color}*/;
 background: #222 /*{a-body-background-color}*/;
@@ -24,7 +24,7 @@ background-image:         linear-gradient( #444 /*{a-body-background-start}*/, #
 }
 
 .superBase:hover {
-border: 1px solid #000 /*{a-bhover-border}*/;
+border: 0px solid #000 ;outline:0;/*{a-bhover-border}*/;
 background: #444444 /*{a-bhover-background-color}*/;
 color: #fff /*{a-bhover-color}*/;
 text-shadow: 0 /*{a-bhover-shadow-x}*/ 1px /*{a-bhover-shadow-y}*/ 1px /*{a-bhover-shadow-radius}*/ #111 /*{a-bhover-shadow-color}*/;
