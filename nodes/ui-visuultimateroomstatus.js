@@ -39,7 +39,7 @@ module.exports = function (RED) {
                 }
             }
             htmlUpperRowPlaceholders += String.raw`
-            <div id="rule` + index + `_{{uniqueID}}"></div>
+            <span class="superBaseRoomStatusRowIcon" id="pos` + index + `_{{uniqueID}}"></span>
             `;
             // Create the array of topics, removing empty ones.
             const aTopics = row.TopicField.split(",");
@@ -47,7 +47,7 @@ module.exports = function (RED) {
             for (let index = 0; index < aTopics.length; index++) {
                 const sTopic = aTopics[index];
                 // Create an object, containing the topic and the current related value (needed for OR logic)
-                if (sTopic.trim() != "") row.TopicFieldArray.push({ topic: sTopic, curVal: 0 });
+                if (sTopic.trim() != "") row.TopicFieldArray.push({ topic: sTopic.trim(), curVal: false });
             }
 
         }
@@ -56,10 +56,12 @@ module.exports = function (RED) {
 
         var data = {
             config: config,
-            rules: rows
+            iconRoom: fs.readFileSync(node.iconPath + "/" + config.iconOn + ".svg", "utf8")
         }
         var configAsJson = JSON.stringify(data);
         html += "<input type='hidden' ng-init='init(" + configAsJson + ")'>";
+        // Save data into the context as well, accessible in the widget
+        node.context().set("NodeDataRules", rows);
         return html;
     }
 
@@ -99,9 +101,30 @@ module.exports = function (RED) {
                     convertBack: function (value) {
                         return value;
                     },
-                    beforeEmit: function (msg, value) {
-                        // make msg.payload accessible as msg.items in widget
-                        return { msg: msg };
+                    beforeEmit: function (msg, value) {// make msg.payload accessible as msg.items in widget
+                        if (!msg) return;  // Ignore undefined msg
+                        if (!msg.hasOwnProperty("topic")) return;
+                        if (!msg.hasOwnProperty("payload")) return;
+
+                        var oRules = node.context().get("NodeDataRules");
+                        // Check incoming topic
+                        for (let index = 0; index < oRules.length; index++) {
+                            const oRule = oRules[index];
+                            // Switch between multi topic check (in OR), or single topic
+                            if (oRule.TopicFieldArray.length == 1 && oRule.TopicFieldArray[0].topic == msg.topic) {
+                                // Single topic
+                                oRule.TopicFieldArray[0].curVal = msg.payload;
+                            } else {
+                                // Multiple topic in OR, using only true/false
+                                var oTopic = oRule.TopicFieldArray.find(a => a.topic == msg.topic);
+                                if (typeof oTopic !== "undefined") {
+                                    oTopic.curVal = msg.payload;
+                                }
+                            }
+                        }
+                        node.context().set("NodeDataRules", oRules);
+                        var ret = { msg: msg, oRules: oRules };
+                        return { msg: ret };
                     },
                     beforeSend: function (msg, orig) {
                         if (orig) {
@@ -117,33 +140,41 @@ module.exports = function (RED) {
                             }
                         };
 
-
                         // Align UI with values in the scope
-                        function AlignUIwithValues() {
-
-                            // 1 BIT
-                            if ($scope.curValOnOff) {
-                                $("#iconOnOff" + $scope.uniqueID).html($scope.iconOnHtml);
-                            } else {
-                                $("#iconOnOff" + $scope.uniqueID).html($scope.iconOffHtml);
-                            }
-
-                            // PERCENT
-                            // Making old 80 things
-                            if (typeof $scope.data.config.controlPERCENT !== "undefined" && $scope.data.config.controlPERCENT !== "") {
-                                if ($scope.curValPERCENT > 0) {
-                                    var activeLine = 10 - ($scope.curValPERCENT / 10);
-                                    var inactiveLine = 10 - activeLine;
-                                    $("#curValPERCENTString" + $scope.uniqueID).html("&nbsp;&nbsp;&nbsp;<font class='superBaseActive'>" + "_".repeat(inactiveLine) + "</font>" + "<font class='superBaseGray'>" + "_".repeat(activeLine));
-
+                        function AlignUIwithValues(oRules) {
+                            for (let index = 0; index < oRules.length; index++) {
+                                const oRule = oRules[index];
+                                var retVal;
+                                // Switch between multi topic check (in OR), or single topic
+                                if (oRule.TopicFieldArray.length == 1) {// Single topic
+                                    //  Eval the curVal and replace the icon/text
+                                    retVal = oRule.TopicFieldArray[0].curVal;
                                 } else {
-                                    $("#curValPERCENTString" + $scope.uniqueID).html("&nbsp;&nbsp;&nbsp;<font class='superBaseGray'>" + "_".repeat(10) + "</font>");
+                                    // Multiple topic in OR, using only true/false
+                                    // At least 1 topic must be true. Find the calculated value
+                                    retVal = false;
+                                    for (let index = 0; index < oRule.TopicFieldArray.length; index++) {
+                                        const oTopic = oRule.TopicFieldArray[index];
+                                        if (oTopic.curVal) {
+                                            retVal = true;
+                                            break;
+                                        }
+                                    }
+
                                 }
-                            } else {
-                                // Hide the % control
-                                $("#iconMINUS" + $scope.uniqueID).hide();
-                                $("#iconPLUS" + $scope.uniqueID).hide();
-                                $("#curValPERCENTString" + $scope.uniqueID).hide();
+                                // Once i have the value, compare it to the rules and set appropriate icon/text
+                                var oRegolaIcona = oRule.RegoleIcona.find(a => a.val == retVal);
+                                // If undefined, try to verify if the rule is a rule that uses "*", that means, accepting all values
+                                if (typeof oRegolaIcona === "undefined") oRegolaIcona = oRule.RegoleIcona.find(a => a.val === "*");
+                                if (typeof oRegolaIcona !== "undefined") {
+                                    if (oRegolaIcona.hasOwnProperty("icon")) {
+                                        // Swap the icon accordingly
+                                        $("#pos" + index + "_" + $scope.uniqueID).html(typeof oRegolaIcona.iconHTML !== "undefined" ? oRegolaIcona.iconHTML : "");
+                                    } else if (oRegolaIcona.hasOwnProperty("text")) {
+                                        // Swap the text accordingly
+                                        $("#pos" + index + "_" + $scope.uniqueID).html(typeof oRegolaIcona.text !== "undefined" ?  oRegolaIcona.text.split("@").join(oRule.TopicFieldArray[0].curVal) : "");
+                                    }
+                                }
                             }
                         }
 
@@ -155,9 +186,11 @@ module.exports = function (RED) {
                         *
                         */
                         $scope.init = function (data) {
+
                             $scope.data = data;
+                            $scope.uniqueID = $scope.$eval('$id');
                             $(document).ready(function () {
-                                AlignUIwithValues();
+                                $("#iconRoom" + $scope.uniqueID).html(data.iconRoom);
                             });
                         };
 
@@ -170,29 +203,11 @@ module.exports = function (RED) {
                         * E.g. change the text color based on the value of msg.color.
                         */
                         $scope.$watch('msg', function (msg) {
-                            if (!msg) return;  // Ignore undefined msg
-                            if (!msg.hasOwnProperty("topic")) return;
-                            if (!msg.hasOwnProperty("payload")) return;
-
+                            //alert("UMPA " + JSON.stringify(msg.msg))
+                            //alert("UMPA " + JSON.stringify(msg.oRules))
                             // The $scope.rules.rule is { "PositionInTemplate": "down", "TopicField": "1/0/9, ", "RegoleIcona": [{ "val": "0", "icon": "light_light", "col": "0", "iconHTML": "" }, { "val": "1", "icon": "light_light", "col": "1", "iconHTML": "" }], "TopicFieldArray": [{ "topic": "1/0/9", "curVal": 0 }] } "
-                            // Check incoming topic
-                            var oRules = $scope.data.rules;
-                            for (let index = 0; index < oRules.length; index++) {
-                                const oRule = oRules[index];
-                                $scope.send({ payload: JSON.stringify(oRule) });
-
-                            }
-
-                            // Control ON/OFF
-                            if (msg.topic === $scope.data.config.control || msg.topic === $scope.data.config.status) {
-                                $scope.curValOnOff = msg.payload;
-                            }
-
-                            // Control PERCENT
-                            if (msg.topic === $scope.data.config.controlPERCENT || msg.topic === $scope.data.config.statusPERCENT) {
-                                $scope.curValPERCENT = msg.payload;
-                            }
-                            AlignUIwithValues();
+                            // https://github.com/Supergiovane/node-red-contrib-ui-visu-ultimate/blob/master/img/jsonRoomStatusRules.png
+                            AlignUIwithValues(msg.oRules);
                         });
                     }
                 });

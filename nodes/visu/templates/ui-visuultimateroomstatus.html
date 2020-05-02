@@ -1,25 +1,29 @@
-<div ng-click="click('navigate')" class="superBase" layout="row" layout-align="space-between stretch" style="font-weight: bold;height:100%">
+<html>
+
+<head>
+    <link href='https://fonts.googleapis.com/css?family=Dosis' rel='stylesheet'>
+</head>
+
+<div ng-click="click('navigate')" class="superBase superBaseRoomStatus" layout="row"
+    layout-align="space-between stretch" style="height:100%">
     <div layout="row" layout-align="left center">
-        <div style="left: 0px; top: 0px;  width: 48px; height: 48px;">
-            <div class="superBaseMainButton" id="iconOnOff{{uniqueID}}"></div>
+        <div class="superBaseMainButton">
+            <div id="iconRoom{{uniqueID}}"></div>
         </div>
-
-        <p style="width:100px">
+        <span style="width:100px">
             &nbsp;&nbsp;&nbsp;{{data.config.name}}
-        </p>
-
+        </span>
     </div>
 
+
+
     <div layout="column" layout-align="space-around end">
-        <div layout="row" layout-align="center start" style="font-size:12px;">
+        <div layout="row" layout-align="center stretch" style="font-size:11px;">
             ##containerUpperRow##
-            <div id="containerUpperRow{{uniqueID}}">
-                <span style="color:#FFA121;">|</span> 22.1°c Auto
-            </div>
         </div>
 
         <div layout="row" layout-align="center end">
-            
+
             <div style="left: 0px; top: 0px; width: 22px; height: 22px;">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="20 20 321 321">
                     <g fill="#FFA121">
@@ -36,7 +40,7 @@
                         d="m222.033,188.252c0,13.73-11.13,24.86-24.859,24.86h-33.147c-13.729,0-24.86-11.13-24.86-24.86v-88.392c0-13.729 11.13-24.86 24.86-24.86h33.147c13.729,0 24.859,11.13 24.859,24.86v88.392z" />
                 </svg>
             </div>
-            
+
             <div style="left: 0px; top: 0px; width: 22px; height: 22px;">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="20 20 321 321">
                     <path fill="none" stroke="#FFA121" stroke-width="10"
@@ -65,3 +69,5 @@
 
     </div>
 </div>
+
+</html>

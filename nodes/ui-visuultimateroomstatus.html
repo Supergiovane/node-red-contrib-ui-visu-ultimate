@@ -20,10 +20,8 @@
                 }
             },
             height: { value: 0 },
-
             name: { value: "" },
             iconOn: { value: "scene_living" },
-
             rules: { value: [{ t: "eq", v: "", vt: "str" }] }
 
 
@@ -117,7 +115,7 @@
                     // New empty row
                     if (!rule.hasOwnProperty("PositionInTemplate")) {
                         rule.PositionInTemplate = "down"
-                        rule.RegoleIcona = '{"val":"0","icon":"light_light","col":"0"}, {"val":"1","icon":"light_light","col":"1"}'
+                        rule.RegoleIcona = '{"val":false,"icon":"light_light","col":"0"}, {"val":true,"icon":"light_light","col":"1"}'
                     }
 
                     var row = $('<div class="form-row"/>').appendTo(container);
