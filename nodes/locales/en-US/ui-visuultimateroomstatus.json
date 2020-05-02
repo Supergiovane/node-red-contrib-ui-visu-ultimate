@@ -7,7 +7,7 @@
     ,"node-input-rule-containerADD" : "Click the button to add a new row in the list above."
     ,"node-input-iconOn" : "Room icon"
     ,"icon-list-link" : "Click here to view the icons!"
-    , "oRowInTemplate":{
+    , "oPositionInTemplate":{
         "up":"Upper Row"
         ,"down":"Lower Row"
     }

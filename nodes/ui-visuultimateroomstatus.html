@@ -115,14 +115,14 @@
                         whiteSpace: 'nowrap'
                     });
                     // New empty row
-                    if (!rule.hasOwnProperty("RowInTemplate")) {
-                        rule.RowInTemplate = "down"
+                    if (!rule.hasOwnProperty("PositionInTemplate")) {
+                        rule.PositionInTemplate = "down"
                         rule.RegoleIcona = '{"val":"0","icon":"light_light","col":"0"}, {"val":"1","icon":"light_light","col":"1"}'
                     }
 
                     var row = $('<div class="form-row"/>').appendTo(container);
                     var row2 = $('<div class="form-row"/>', { style: "padding-top: 5px; padding-left: 5px;" }).appendTo(container);
-                    var oRowInTemplate = $('<select/>', { class: "oRowInTemplate", type: "text", style: "width:100px; margin-left: 2px; text-align: left;" }).appendTo(row);
+                    var oPositionInTemplate = $('<select/>', { class: "oPositionInTemplate", type: "text", style: "width:100px; margin-left: 2px; text-align: left;" }).appendTo(row);
                     var oTopicField = $("<input/>", { class: "oTopicField", type: "text", placeholder: "Input topic to evaluate, separated by comma", style: "width:70%; margin-left: 5px; text-align: left;" }).appendTo(row);
                     var finalspan = $('<span/>', { style: "" }).appendTo(row);
                     var oRegoleIcona = $('<input/>', { class: "oRegoleIcona", type: "text", style: "width:100%; margin-left: 0px; text-align: left;font-style: italic;", placeholder: '{"val":"0","icon":"light_light","col":"0"}, {"val":"1","icon":"light_light","col":"1"}, {"val":"3","text":"Temperature: @°c","col":"0"}' }).appendTo(row2);
@@ -131,12 +131,12 @@
                         resizeRule(container);
                     });
 
-                    oRowInTemplate.append($("<option></option>")
+                    oPositionInTemplate.append($("<option></option>")
                         .attr("value", "up")
-                        .text(node._("oRowInTemplate.up")));
-                    oRowInTemplate.append($("<option></option>")
+                        .text(node._("oPositionInTemplate.up")));
+                    oPositionInTemplate.append($("<option></option>")
                         .attr("value", "down")
-                        .text(node._("oRowInTemplate.down")));
+                        .text(node._("oPositionInTemplate.down")));
 
                     // Autocomplete suggestion with ETS csv File
                     oTopicField// don't navigate away from the field on tab when selecting an item
@@ -175,7 +175,7 @@
                             }
                         });
 
-                    oRowInTemplate.val(rule.RowInTemplate);
+                    oPositionInTemplate.val(rule.PositionInTemplate);
                     oTopicField.val(rule.TopicField);
                     oRegoleIcona.val(rule.RegoleIcona);
                 },
@@ -204,10 +204,10 @@
             node.rules = [];
             rules.each(function (i) {
                 var rule = $(this);
-                var oRowInTemplate = rule.find(".oRowInTemplate").val();
+                var oPositionInTemplate = rule.find(".oPositionInTemplate").val();
                 var oTopicField = rule.find(".oTopicField").val();
                 var oRegoleIcona = rule.find(".oRegoleIcona").val();
-                node.rules.push({ RowInTemplate: oRowInTemplate, TopicField: oTopicField, RegoleIcona: oRegoleIcona });
+                node.rules.push({ PositionInTemplate: oPositionInTemplate, TopicField: oTopicField, RegoleIcona: oRegoleIcona });
             });
             // END RULE CONTAINER
 

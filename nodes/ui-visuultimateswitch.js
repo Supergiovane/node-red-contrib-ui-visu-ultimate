@@ -14,11 +14,14 @@ module.exports = function (RED) {
 
     function HTML(config, node) {
         var html = "<style>" + fs.readFileSync(node.fileStyle, "utf8") + "</style>" + fs.readFileSync(node.fileTemplate, "utf8");
-        var data = {
-            config: config,
-            iconOffHtml: fs.readFileSync(node.icon + "/" + config.iconOn + ".svg", "utf8"),
-            iconOnHtml: fs.readFileSync(node.icon + "/" + config.iconOn + ".svg", "utf8").split("\#fff").join("#FFA121")
-        }
+        try {
+            var data = {
+                config: config,
+                iconOffHtml: fs.readFileSync(node.icon + "/" + config.iconOn + ".svg", "utf8"),
+                iconOnHtml: fs.readFileSync(node.icon + "/" + config.iconOn + ".svg", "utf8").split("\#fff").join("#FFA121")
+            }
+        } catch (error) { }
+       
         var configAsJson = JSON.stringify(data);
         html += "<input type='hidden' ng-init='init(" + configAsJson + ")'>";
         return html;

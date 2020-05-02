@@ -14,10 +14,49 @@ module.exports = function (RED) {
 
     function HTML(config, node) {
         var html = "<style>" + fs.readFileSync(node.fileStyle, "utf8") + "</style>" + fs.readFileSync(node.fileTemplate, "utf8");
+
+        // 01/05/2020 iterate the rule rows to add the html path of the icons and to create the array of topics to be heard for changes
+        var rows = config.rules;
+        var htmlUpperRowPlaceholders = "";
+        for (let index = 0; index < rows.length; index++) {
+            var row = rows[index];
+            // row is { PositionInTemplate: oPositionInTemplate, TopicField: oTopicField, RegoleIcona: oRegoleIcona }
+            row.RegoleIcona = row.RegoleIcona.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": '); // Clean JSON 
+            row.RegoleIcona = JSON.parse("[" + row.RegoleIcona + "]"); // and get object
+            var oIconRules = row.RegoleIcona;
+            for (let index = 0; index < oIconRules.length; index++) {
+                var iconRule = oIconRules[index];
+                if (iconRule.hasOwnProperty("icon")) {
+                    try {
+                        if (iconRule.col == "0") { // Set the colors
+                            iconRule.iconHTML = fs.readFileSync(node.iconPath + "/" + iconRule.icon + ".svg", "utf8")
+                        } else if (iconRule.col == "1") {
+                            iconRule.iconHTML = fs.readFileSync(node.iconPath + "/" + iconRule.icon + ".svg", "utf8").split("\#fff").join("#FFA121")
+                        } else {
+                            iconRule.iconHTML = fs.readFileSync(node.iconPath + "/" + iconRule.icon + ".svg", "utf8").split("\#fff").join(iconRule.col)
+                        }
+                    } catch (error) { RED.log.error("Visu-Ultimate: Error generating HTML: ") + error }
+                }
+            }
+            htmlUpperRowPlaceholders += String.raw`
+            <div id="rule` + index + `_{{uniqueID}}"></div>
+            `;
+            // Create the array of topics, removing empty ones.
+            const aTopics = row.TopicField.split(",");
+            row.TopicFieldArray = [];
+            for (let index = 0; index < aTopics.length; index++) {
+                const sTopic = aTopics[index];
+                // Create an object, containing the topic and the current related value (needed for OR logic)
+                if (sTopic.trim() != "") row.TopicFieldArray.push({ topic: sTopic, curVal: 0 });
+            }
+
+        }
+        // Add the placeholders for icons/texts
+        html = html.split("\#\#containerUpperRow\#\#").join(htmlUpperRowPlaceholders);
+
         var data = {
             config: config,
-            iconOffHtml: fs.readFileSync(node.icon + "/" + config.iconOn + ".svg", "utf8"),
-            iconOnHtml: fs.readFileSync(node.icon + "/" + config.iconOn + ".svg", "utf8").split("\#fff").join("#FFA121")
+            rules: rows
         }
         var configAsJson = JSON.stringify(data);
         html += "<input type='hidden' ng-init='init(" + configAsJson + ")'>";
@@ -36,7 +75,7 @@ module.exports = function (RED) {
             node.server = RED.nodes.getNode(config.server)
             node.fileStyle = __dirname + "/visu/templates/styles/" + node.server.style;
             node.fileTemplate = __dirname + "/visu/templates/ui-visuultimateroomstatus.html";
-            node.icon = __dirname + "/visu/icons/ws";
+            node.iconPath = __dirname + "/visu/icons/ws";
             node.name = config.name || "Room Status";
 
             if (checkConfig(node, config)) {
@@ -71,57 +110,13 @@ module.exports = function (RED) {
                     },
                     initController: function ($scope, events) {
                         $scope.uniqueID = $scope.$eval('$id');
-                        $scope.curValOnOff = false;
-                        $scope.curValPERCENT = 0;
 
                         $scope.click = function (item, selected) {
-                            if (item == "toggle") {
-
-                                $scope.curValOnOff = !$scope.curValOnOff;
+                            if (item == "navigate") {
                                 $scope.send({ payload: false, destination: $scope.data.config.control });
-
-                                AlignUIwithValues();
-                                if (selected) {
-                                    item.selected = selected;
-                                }
-
-                            } else if (item == "percentMINUS") {
-                                $scope.curValPERCENT -= 20;
-                                if ($scope.curValPERCENT < 0) $scope.curValPERCENT = 0;
-                                AutoSwitchIfPercent();
-                                AlignUIwithValues();
-
-                            } else if (item == "percentPLUS") {
-                                $scope.curValPERCENT += 20;
-                                if ($scope.curValPERCENT > 100) $scope.curValPERCENT = 100;
-                                AutoSwitchIfPercent();
-                                AlignUIwithValues();
                             }
                         };
 
-                        // Auto switch ON / OFF based on Percentage
-                        function AutoSwitchIfPercent() {
-                            // Switch on if off and off if on
-                            if ($scope.curValPERCENT > 0) {
-                                if (!Boolean($scope.curValOnOff)) {
-                                    // Switch on
-                                    $scope.curValOnOff = true;
-                                    $scope.send({ payload: $scope.curValOnOff, destination: $scope.data.config.control });
-                                    // Then set the new val
-                                    setTimeout(function () { $scope.send({ payload: $scope.curValPERCENT, destination: $scope.data.config.controlPERCENT }); }, 1000)
-                                } else {
-                                    // Set the new val
-                                    $scope.send({ payload: $scope.curValPERCENT, destination: $scope.data.config.controlPERCENT });
-                                }
-                            } else {
-                                // Switch Off
-                                $scope.curValOnOff = false;
-                                // Set the percent
-                                $scope.send({ payload: $scope.curValPERCENT, destination: $scope.data.config.controlPERCENT });
-                                // Then switch off
-                                setTimeout(function () { $scope.send({ payload: $scope.curValOnOff, destination: $scope.data.config.control }); }, 1000);
-                            }
-                        }
 
                         // Align UI with values in the scope
                         function AlignUIwithValues() {
@@ -152,7 +147,6 @@ module.exports = function (RED) {
                             }
                         }
 
-
                         /*
                         * STORE THE CONFIGURATION FROM NODE-RED FLOW INTO THE DASHBOARD
                         * The configuration (from the node's config screen in the flow editor) should be saved in the $scope.
@@ -162,13 +156,8 @@ module.exports = function (RED) {
                         */
                         $scope.init = function (data) {
                             $scope.data = data;
-                            $scope.iconOnHtml = data.iconOnHtml;
-                            $scope.iconOffHtml = data.iconOffHtml;
-
-                            //node.curValOnOff = true;
                             $(document).ready(function () {
                                 AlignUIwithValues();
-
                             });
                         };
 
@@ -181,7 +170,18 @@ module.exports = function (RED) {
                         * E.g. change the text color based on the value of msg.color.
                         */
                         $scope.$watch('msg', function (msg) {
-                            if (!msg) { return; } // Ignore undefined msg
+                            if (!msg) return;  // Ignore undefined msg
+                            if (!msg.hasOwnProperty("topic")) return;
+                            if (!msg.hasOwnProperty("payload")) return;
+
+                            // The $scope.rules.rule is { "PositionInTemplate": "down", "TopicField": "1/0/9, ", "RegoleIcona": [{ "val": "0", "icon": "light_light", "col": "0", "iconHTML": "" }, { "val": "1", "icon": "light_light", "col": "1", "iconHTML": "" }], "TopicFieldArray": [{ "topic": "1/0/9", "curVal": 0 }] } "
+                            // Check incoming topic
+                            var oRules = $scope.data.rules;
+                            for (let index = 0; index < oRules.length; index++) {
+                                const oRule = oRules[index];
+                                $scope.send({ payload: JSON.stringify(oRule) });
+
+                            }
 
                             // Control ON/OFF
                             if (msg.topic === $scope.data.config.control || msg.topic === $scope.data.config.status) {
