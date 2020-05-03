@@ -18,6 +18,7 @@ module.exports = function (RED) {
         // 01/05/2020 iterate the rule rows to add the html path of the icons and to create the array of topics to be heard for changes
         var rows = config.rules;
         var htmlUpperRowPlaceholders = "";
+        var htmlLowerRowPlaceholders = "";
         for (let index = 0; index < rows.length; index++) {
             var row = rows[index];
             // row is { PositionInTemplate: oPositionInTemplate, TopicField: oTopicField, RegoleIcona: oRegoleIcona }
@@ -38,9 +39,16 @@ module.exports = function (RED) {
                     } catch (error) { RED.log.error("Visu-Ultimate: Error generating HTML: ") + error }
                 }
             }
-            htmlUpperRowPlaceholders += String.raw`
+            if (row.PositionInTemplate == "up") {
+                htmlUpperRowPlaceholders += String.raw`
             <span class="superBaseRoomStatusRowIcon" id="pos` + index + `_{{uniqueID}}"></span>
             `;
+            } else {
+                htmlLowerRowPlaceholders += String.raw`
+                <span class="superBaseRoomStatusRowIcon" id="pos` + index + `_{{uniqueID}}"></span>
+                `;
+            }
+
             // Create the array of topics, removing empty ones.
             const aTopics = row.TopicField.split(",");
             row.TopicFieldArray = [];
@@ -53,6 +61,7 @@ module.exports = function (RED) {
         }
         // Add the placeholders for icons/texts
         html = html.split("\#\#containerUpperRow\#\#").join(htmlUpperRowPlaceholders);
+        html = html.split("\#\#containerLowerRow\#\#").join(htmlLowerRowPlaceholders);
 
         var data = {
             config: config,
@@ -172,7 +181,7 @@ module.exports = function (RED) {
                                         $("#pos" + index + "_" + $scope.uniqueID).html(typeof oRegolaIcona.iconHTML !== "undefined" ? oRegolaIcona.iconHTML : "");
                                     } else if (oRegolaIcona.hasOwnProperty("text")) {
                                         // Swap the text accordingly
-                                        $("#pos" + index + "_" + $scope.uniqueID).html(typeof oRegolaIcona.text !== "undefined" ?  oRegolaIcona.text.split("@").join(oRule.TopicFieldArray[0].curVal) : "");
+                                        $("#pos" + index + "_" + $scope.uniqueID).html(typeof oRegolaIcona.text !== "undefined" ? "<div style='margin-top:5px;'>" + oRegolaIcona.text.split("@").join(oRule.TopicFieldArray[0].curVal) + "</div>" : "");
                                     }
                                 }
                             }

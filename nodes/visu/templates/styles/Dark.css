@@ -120,6 +120,7 @@
 }
 
 .superBaseMainButton {
+	left: 0px; top: 0px;
 	min-width: 48px;
 	min-height: 48px;
 	border: 0;
