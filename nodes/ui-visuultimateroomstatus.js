@@ -89,6 +89,8 @@ module.exports = function (RED) {
             node.iconPath = __dirname + "/visu/icons/ws";
             node.name = config.name || "Room Status";
 
+            RED.log.warn("BANANA " + JSON.stringify(RED.nodes.getNode(config.group)))
+
             if (checkConfig(node, config)) {
                 if (ui === undefined) {
                     ui = RED.require("node-red-dashboard")(RED);
@@ -101,7 +103,7 @@ module.exports = function (RED) {
                     order: config.order,                    // *REQUIRED* !!DO NOT EDIT!!
                     group: config.group,                    // *REQUIRED* !!DO NOT EDIT!!
                     width: config.width,                    // *REQUIRED* !!DO NOT EDIT!!
-                    height: config.height,                  // *REQUIRED* !!DO NOT EDIT!!
+                    height: config.height,
                     format: html,                           // *REQUIRED* !!DO NOT EDIT!!
                     templateScope: "local",                 // *REQUIRED* !!DO NOT EDIT!!
                     emitOnlyNewValues: false,               // *REQUIRED* Edit this if you would like your node to only emit new values.
@@ -199,7 +201,19 @@ module.exports = function (RED) {
                             $scope.data = data;
                             $scope.uniqueID = $scope.$eval('$id');
                             $(document).ready(function () {
+                                //setTimeout(function () {
+                                    //alert($scope.uniqueID + " : " + $("#divPrincipale" + $scope.uniqueID).closest("md-card").height());
+                                    //alert($scope.uniqueID + " : " + $("#divPrincipale" + $scope.uniqueID).height());
+                                    //var widgetHeight = $("#divPrincipale" + $scope.uniqueID).height();
+                                   
+                                    //$("#iconRoom" + $scope.uniqueID).attr("style", "height:" + widgetHeight-12 + "px;");
+
+                                //}, 100)
+
                                 $("#iconRoom" + $scope.uniqueID).html(data.iconRoom);
+
+                                //$("#iconRoom" + $scope.uniqueID).attr("style", "height:10px;width:10px");
+                                //$("#iconRoom" + $scope.uniqueID).attr("src", "data:image/svg+xml;charset=utf-8," + data.iconRoom);
                             });
                         };
 

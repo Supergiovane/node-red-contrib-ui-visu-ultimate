@@ -5,24 +5,27 @@
 </head>
 
 <div ng-click="click('navigate')" class="superBase superBaseRoomStatus" layout="row"
-    layout-align="space-between stretch" style="height:100%">
-    <div layout="row" layout-align="start center">
-        <div class="superBaseMainButton">
+    layout-align="space-between stretch" style="height:100%;">
+    <div layout="row" layout-align="start stretch">
+        <div  class="superBaseMainButton" >
             <div id="iconRoom{{uniqueID}}"></div>
         </div>
-        <div layout="row" layout-align="start start" style="width:100px;height:100%;margin-top:15px;">
+        <div layout="row" layout-align="start center" style="width:100px;margin-bottom:20px;">
             &nbsp;&nbsp;&nbsp;{{data.config.name}}
         </div>
+       
     </div>
 
 
 
     <div layout="column" layout-align="space-around end">
-        <div layout="row" layout-align="center center" style="font-size:11px;height:100%;margin-top: 3px;margin-right: 5px;">
+        <div layout="row" layout-align="center center"
+            style="font-size:11px;margin-top: 3px;margin-right: 5px;">
             ##containerUpperRow##
         </div>
 
-        <div layout="row" layout-align="center center" style="font-size:11px;height:100%;margin-bottom: 3px;margin-right: 5px;">
+        <div layout="row" layout-align="center center"
+            style="font-size:11px;margin-bottom: 3px;margin-right: 5px;">
             ##containerLowerRow##
         </div>
 
