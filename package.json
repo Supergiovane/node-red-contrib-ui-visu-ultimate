@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-ui-visu-ultimate",
-  "version": "0.0.2",
+  "version": "0.0.2beta",
   "description": "Node-RED UI widget set, specific for home automation and compatible with knx-ultimate node.",
   "dependencies": {
     "fs": "0.0.1-security",
