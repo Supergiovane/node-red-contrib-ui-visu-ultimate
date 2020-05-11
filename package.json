@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-ui-visu-ultimate",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Node-RED UI widget set, specific for home automation and compatible with knx-ultimate node.",
   "dependencies": {
     "fs": "0.0.1-security",
@@ -8,6 +8,7 @@
     "path": "^0.12.7"
   },
   "node-red": {
+    "version": ">=0.14.0",
     "nodes": {
       "ui_ui-visuultimateswitch": "nodes/ui-visuultimateswitch.js",
       "ui_ui-visuultimateroomstatus": "nodes/ui-visuultimateroomstatus.js",
@@ -21,10 +22,14 @@
   "keywords": [
     "node-red",
     "visualization",
-    "dashboard",
+    "ui",
     "home automation",
     "IOT"
   ],
+  "main": "none",
   "author": "Supergiovane",
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "node": ">=8"
+  }
 }
