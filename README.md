@@ -2,12 +2,14 @@
  Node-RED UI widget set, specific for home automation and compatible with knx-ultimate node.
 
  ## SWITCH
+
  **Input messages**
 
  <code>msg.topic</code> sets the topic<br/>
  <code>msg.payload</code> sets the value<br/>
 
  ## ROOM STATUS
+ 
  **Configuration**
 
 <code>Config</code> sets the common configuration node, for setting the common Style, etc..<br/>

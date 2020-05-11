@@ -24,7 +24,7 @@ module.exports = (RED) => {
         // });
 
         // 20/04/2020
-        RED.httpAdmin.get("/visuUltimategetOnlyIconNames", RED.auth.needsPermission('visuConfig.read'), function (req, res) {
+        RED.httpAdmin.get("/visuUltimategetOnlyIconNames", function (req, res) {
             var jListOwnFiles = [];
             var sName = "";
             try {
@@ -36,7 +36,7 @@ module.exports = (RED) => {
         });
 
         // 20/04/2020
-        RED.httpAdmin.get("/visuUltimategetStyle", RED.auth.needsPermission('visuConfig.read'), function (req, res) {
+        RED.httpAdmin.get("/visuUltimategetStyle", function (req, res) {
             var jListOwnFiles = [];
             var sName = "";
             try {
@@ -51,7 +51,7 @@ module.exports = (RED) => {
 
 
         // 20/04/2020
-        RED.httpAdmin.get("/visuUltimategetIconsHTML", RED.auth.needsPermission('visuConfig.read'), function (req, res) {
+        RED.httpAdmin.get("/visuUltimategetIconsHTML", function (req, res) {
             var jListOwnFiles = [];
             var sList = "";
             var sCSS = `<html><body><style>
@@ -63,14 +63,14 @@ module.exports = (RED) => {
                 fs.readdirSync(node.dirIcons).forEach(file => {
                     if (file.indexOf(".svg") > -1) sList += "<li class=\"ui-state-default\">" + file.replace(".svg", "") + "<div style=\"left: 0px; top: 0px;  width: 62px; height: 62px;\">" + fs.readFileSync(node.dirIcons + "/" + file, "utf8") + "</div></li>";
                 });
-            } catch (error) { }
+            } catch (error) { res.write("ORRORE " + error);}
             res.write(sCSS + sList + "</ol>" + "</body></html>");
             //res.write(fs.readFileSync(__dirname + "/visu/iconList.html", "utf8"));
             res.end();
         });
 
         // 20/04/2020
-        RED.httpAdmin.get("/visuUltimategetIcon", RED.auth.needsPermission('visuConfig.read'), function (req, res) {
+        RED.httpAdmin.get("/visuUltimategetIcon", function (req, res) {
             var sIcon = "";
             try {
                 sIcon = fs.readFileSync(node.dirIcons + "/" + req.query.file + ".svg", "utf8");
