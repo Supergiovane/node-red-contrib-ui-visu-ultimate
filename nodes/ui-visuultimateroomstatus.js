@@ -89,8 +89,6 @@ module.exports = function (RED) {
             node.iconPath = __dirname + "/visu/icons/ws";
             node.name = config.name || "Room Status";
 
-            RED.log.warn("BANANA " + JSON.stringify(RED.nodes.getNode(config.group)))
-
             if (checkConfig(node, config)) {
                 if (ui === undefined) {
                     ui = RED.require("node-red-dashboard")(RED);

@@ -1,8 +1,14 @@
-<div class="superBase" layout="row" layout-align="space-between stretch" style="font-weight: normal;height:100%">
+<html>
+
+<head>
+    <link href='https://fonts.googleapis.com/css?family=Dosis' rel='stylesheet'>
+</head>
+
+<div class="superBase" layout="row" layout-align="space-between stretch" style="font-weight: normal;height:100%;width: 100%;" >
     
    
-        <div  layout="row" layout-align="left center" >
-            <div class="superBaseMainButton" ng-click="click('toggle')" id="iconOnOff{{uniqueID}}"></div>
+        <div style="font-weight: normal;height:100%;width: 44px;" layout="row" layout-align="left center">
+            <div class="superBaseMainButton" ng-click="click('toggle')" id="iconOnOff{{uniqueID}}" ></div>
         </div>
         <div layout="column" layout-align="center start">
             <p style="width:100%">
@@ -15,7 +21,7 @@
 
 
     <div layout="row" layout-align="end center">
-        <div class="superBaseMainButton" ng-click="click('percentMINUS')" id="iconMINUS{{uniqueID}}">
+        <div class="superBaseMainButton" ng-click="click('percentMINUS')" id="iconMINUS{{uniqueID}}" style="height:100%;width: 44px;">
 
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="20 20 321 321">
                 <path fill="none" stroke="dimgray" stroke-width="10"
@@ -24,7 +30,7 @@
 
         </div>
 
-        <div class="superBaseMainButton" ng-click="click('percentPLUS')" id="iconPLUS{{uniqueID}}">
+        <div class="superBaseMainButton" ng-click="click('percentPLUS')" id="iconPLUS{{uniqueID}}" style="height:100%;width: 44px;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="20 20 321 321">
                 <g fill="none" stroke="dimgray" stroke-width="10">
                     <path d="m173.333,193.667h-67.833c-3.313,0-6-2.687-6-6v-13.333c0-3.313 2.687-6 6-6h67.833" />
@@ -41,3 +47,5 @@
 
   
 </div>
+
+</html>

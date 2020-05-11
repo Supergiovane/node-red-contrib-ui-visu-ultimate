@@ -17,11 +17,11 @@ module.exports = function (RED) {
         try {
             var data = {
                 config: config,
-                iconOffHtml: fs.readFileSync(node.icon + "/" + config.iconOn + ".svg", "utf8"),
-                iconOnHtml: fs.readFileSync(node.icon + "/" + config.iconOn + ".svg", "utf8").split("\#fff").join("#FFA121")
+                iconOffHtml: fs.readFileSync(node.iconPath + "/" + config.iconOn + ".svg", "utf8"),
+                iconOnHtml: fs.readFileSync(node.iconPath + "/" + config.iconOn + ".svg", "utf8").split("\#fff").join("#FFA121")
             }
-        } catch (error) { }
-       
+        } catch (error) { RED.log.error("ORRORE function HTML " + error)}
+      
         var configAsJson = JSON.stringify(data);
         html += "<input type='hidden' ng-init='init(" + configAsJson + ")'>";
         return html;
@@ -41,7 +41,7 @@ module.exports = function (RED) {
             node.server = RED.nodes.getNode(config.server)
             node.fileStyle = __dirname + "/visu/templates/styles/" + node.server.style;
             node.fileTemplate = __dirname + "/visu/templates/ui-visuultimateswitch.html";
-            node.icon = __dirname + "/visu/icons/ws";
+            node.iconPath = __dirname + "/visu/icons/ws";
             node.name = config.name || "Light";
 
             if (checkConfig(node, config)) {
